@@ -1,0 +1,32 @@
+package com.amqo.randomuser.db
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.amqo.randomuser.db.entity.RandomUserEntry
+
+@Database(
+    entities = [RandomUserEntry::class],
+    version = 1, exportSchema = false
+)
+abstract class RandomUsersDatabase : RoomDatabase() {
+
+    abstract fun randomUsersDao(): RandomUsersDao
+
+    companion object {
+        @Volatile private var instance: RandomUsersDatabase? = null
+        private val LOCK = Any()
+
+        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
+            instance ?: buildDatabase(context).also {
+                instance = it
+            }
+        }
+
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(context.applicationContext,
+                RandomUsersDatabase::class.java, "random_users.db")
+                .build()
+    }
+}
