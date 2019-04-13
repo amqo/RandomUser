@@ -23,5 +23,4 @@ class RandomUsersNetworkDataSourceImpl(
             Log.e(NoConnectivityException::class.java.simpleName, "No internet connection", exception)
         }
     }
-
 }

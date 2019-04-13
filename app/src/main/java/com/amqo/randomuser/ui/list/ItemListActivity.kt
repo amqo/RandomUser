@@ -2,16 +2,22 @@ package com.amqo.randomuser.ui.list
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amqo.randomuser.R
+import com.amqo.randomuser.data.repository.RandomUsersRepository
 import com.amqo.randomuser.db.entity.RandomUserEntry
+import com.amqo.randomuser.internal.afterTextChanged
 import com.amqo.randomuser.internal.consume
+import com.amqo.randomuser.internal.observeOnce
 import com.amqo.randomuser.ui.base.ScopedActivity
 import com.amqo.randomuser.ui.detail.ItemDetailActivity
 import com.amqo.randomuser.ui.detail.ItemDetailFragment
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_item_list.*
 import kotlinx.android.synthetic.main.item_list.*
 import kotlinx.coroutines.Dispatchers
@@ -28,30 +34,23 @@ class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.Rando
 
     private lateinit var viewModel: RandomUserListViewModel
     private lateinit var adapterRandomUsers: RandomUsersAdapter
+    private lateinit var usersPagedList: PagedList<RandomUserEntry>
 
     private var twoPane: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item_list)
-
         setSupportActionBar(toolbar)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(RandomUserListViewModel::class.java)
 
         toolbar.title = title
+        twoPane = item_detail_container != null
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-
-        if (item_detail_container != null) {
-            twoPane = true
-        }
-
-        bindUI()
+        initRandomUsersAdapter()
+        initSearchListener()
     }
 
     // RandomUsersAdapter.RandomUsersListener functions
@@ -68,7 +67,29 @@ class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.Rando
 
     // Private functions
 
-    private fun bindUI() = launch(Dispatchers.Main) {
+    private fun initSearchListener() {
+        search.afterTextChanged {
+            search.clearFocus()
+            if (it.isEmpty()) {
+                adapterRandomUsers.submitList(usersPagedList)
+            } else {
+                val factory: DataSource.Factory<Int, RandomUserEntry> = viewModel.filterUsersWithSearch("%$it%")
+                val pagedListBuilder: LivePagedListBuilder<Int, RandomUserEntry> =
+                    LivePagedListBuilder<Int, RandomUserEntry>(factory, RandomUsersRepository.PAGES_RANDOM_USERS_SIZE)
+                val pagedList = pagedListBuilder.build()
+                pagedList.observeOnce(this@ItemListActivity,
+                    Observer { filteredRandomUsers ->
+                        if (filteredRandomUsers.isEmpty()) {
+                            adapterRandomUsers.submitList(usersPagedList)
+                        } else {
+                            adapterRandomUsers.submitList(filteredRandomUsers)
+                        }
+                    })
+            }
+        }
+    }
+
+    private fun initRandomUsersAdapter()= launch(Dispatchers.Main) {
         val linearLayoutManager = LinearLayoutManager(
             this@ItemListActivity, RecyclerView.VERTICAL, false)
         adapterRandomUsers = RandomUsersAdapter(this@ItemListActivity)
@@ -77,7 +98,8 @@ class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.Rando
             adapter = adapterRandomUsers
         }
         consume(viewModel.randomUsers, {
-            adapterRandomUsers.submitList(it)
+            usersPagedList = it
+            adapterRandomUsers.submitList(usersPagedList)
         })
     }
 

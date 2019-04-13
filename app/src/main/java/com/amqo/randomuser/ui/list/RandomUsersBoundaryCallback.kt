@@ -10,7 +10,14 @@ class RandomUsersBoundaryCallback(
 ) : PagedList.BoundaryCallback<RandomUserEntry>() {
 
     override fun onItemAtEndLoaded(itemAtEnd: RandomUserEntry) {
-        super.onItemAtEndLoaded(itemAtEnd)
+        getNewRandomUsers()
+    }
+
+    override fun onZeroItemsLoaded() {
+        getNewRandomUsers()
+    }
+
+    private fun getNewRandomUsers() {
         runBlocking {
             randomUsersRepository.getNewRandomUsers()
         }

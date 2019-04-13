@@ -29,16 +29,24 @@ class RandomUsersRepositoryImpl(
         randomUsersNetworkDataSource.fetchRandomUsers(PAGES_RANDOM_USERS_SIZE)
     }
 
-    override suspend fun getRandomUsers(): DataSource.Factory<Int, RandomUserEntry> {
+    override fun getRandomUsers(): DataSource.Factory<Int, RandomUserEntry> {
         return randomUsersDao.getAllPaged()
     }
 
-    override suspend fun getRandomUserWithId(id: String): LiveData<out RandomUserEntry> {
+    override fun getRandomUserWithId(
+        id: String
+    ): LiveData<out RandomUserEntry> {
         return randomUsersDao.getWithId(id)
     }
 
     override suspend fun deleteRandomUserWithId(id: String) {
         randomUsersDao.deleteWithId(id)
+    }
+
+    override fun filterUsersWithSearch(
+        search: String
+    ): DataSource.Factory<Int, RandomUserEntry> {
+        return randomUsersDao.getWithSearch(search)
     }
 
     private fun persistFetchedRandomUsers(fetchedRandomUsers: RandomUsersResponse) {

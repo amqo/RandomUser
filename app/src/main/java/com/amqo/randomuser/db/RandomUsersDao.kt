@@ -20,6 +20,9 @@ interface RandomUsersDao {
     @Query("select * from random_users where user_uuid == :id ")
     fun getWithId(id: String): LiveData<RandomUserEntry>
 
+    @Query("select * from random_users where name_first like :search or name_last like :search or email like :search")
+    fun getWithSearch(search: String): DataSource.Factory<Int, RandomUserEntry>
+
     @Query("update random_users set removed = 1 where user_uuid == :id")
     fun deleteWithId(id: String)
 }

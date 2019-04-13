@@ -13,13 +13,15 @@ interface RandomUsersRepository {
 
     suspend fun getNewRandomUsers()
 
-    suspend fun getRandomUsers(): DataSource.Factory<Int, RandomUserEntry>
+    fun getRandomUsers(): DataSource.Factory<Int, RandomUserEntry>
 
-    suspend fun getRandomUserWithId(
+    fun getRandomUserWithId(
         id: String
     ): LiveData<out RandomUserEntry>
 
-    suspend fun deleteRandomUserWithId(
-        id: String
-    )
+    suspend fun deleteRandomUserWithId(id: String)
+
+    fun filterUsersWithSearch(
+        search: String
+    ): DataSource.Factory<Int, RandomUserEntry>
 }

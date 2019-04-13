@@ -7,7 +7,5 @@ interface RandomUsersNetworkDataSource {
 
     val downloadedRandomUsers: LiveData<RandomUsersResponse>
 
-    suspend fun fetchRandomUsers(
-        number: Int
-    )
+    suspend fun fetchRandomUsers(number: Int)
 }
