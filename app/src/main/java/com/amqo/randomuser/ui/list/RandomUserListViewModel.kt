@@ -18,19 +18,30 @@ class RandomUserListViewModel(
         buildRandomUsers()
     }
 
-    private fun buildRandomUsers() : LiveData<PagedList<RandomUserEntry>> {
+    suspend fun removeUser(randomUser: RandomUserEntry) {
+        randomUsersRepository.deleteRandomUserWithId(randomUser.getId())
+    }
+
+    fun buildFilteredRandomUsers(
+        search: String
+    ): LiveData<PagedList<RandomUserEntry>> {
+        val factory: DataSource.Factory<Int, RandomUserEntry> = filterUsersWithSearch("%$search%")
+        val pagedListBuilder: LivePagedListBuilder<Int, RandomUserEntry> =
+            LivePagedListBuilder<Int, RandomUserEntry>(factory, PAGES_RANDOM_USERS_SIZE)
+        return pagedListBuilder.build()
+    }
+
+    private fun filterUsersWithSearch(
+        search: String
+    ): DataSource.Factory<Int, RandomUserEntry> {
+        return randomUsersRepository.filterUsersWithSearch(search)
+    }
+
+    private fun buildRandomUsers(): LiveData<PagedList<RandomUserEntry>> {
         val factory: DataSource.Factory<Int, RandomUserEntry> = randomUsersRepository.getRandomUsers()
         val pagedListBuilder: LivePagedListBuilder<Int, RandomUserEntry> =
             LivePagedListBuilder<Int, RandomUserEntry>(factory, PAGES_RANDOM_USERS_SIZE)
         pagedListBuilder.setBoundaryCallback(RandomUsersBoundaryCallback(randomUsersRepository))
         return pagedListBuilder.build()
-    }
-
-    suspend fun removeUser(randomUser: RandomUserEntry) {
-        randomUsersRepository.deleteRandomUserWithId(randomUser.getId())
-    }
-
-    fun filterUsersWithSearch(search: String): DataSource.Factory<Int, RandomUserEntry> {
-        return randomUsersRepository.filterUsersWithSearch(search)
     }
 }

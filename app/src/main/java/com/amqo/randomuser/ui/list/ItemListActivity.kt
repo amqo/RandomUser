@@ -4,13 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.paging.DataSource
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amqo.randomuser.R
-import com.amqo.randomuser.data.repository.RandomUsersRepository
 import com.amqo.randomuser.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.afterTextChanged
 import com.amqo.randomuser.internal.consume
@@ -73,17 +70,9 @@ class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.Rando
             if (it.isEmpty()) {
                 adapterRandomUsers.submitList(usersPagedList)
             } else {
-                val factory: DataSource.Factory<Int, RandomUserEntry> = viewModel.filterUsersWithSearch("%$it%")
-                val pagedListBuilder: LivePagedListBuilder<Int, RandomUserEntry> =
-                    LivePagedListBuilder<Int, RandomUserEntry>(factory, RandomUsersRepository.PAGES_RANDOM_USERS_SIZE)
-                val pagedList = pagedListBuilder.build()
-                pagedList.observeOnce(this@ItemListActivity,
+                viewModel.buildFilteredRandomUsers(it).observeOnce(this@ItemListActivity,
                     Observer { filteredRandomUsers ->
-                        if (filteredRandomUsers.isEmpty()) {
-                            adapterRandomUsers.submitList(usersPagedList)
-                        } else {
-                            adapterRandomUsers.submitList(filteredRandomUsers)
-                        }
+                        adapterRandomUsers.submitList(filteredRandomUsers)
                     })
             }
         }
