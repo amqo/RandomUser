@@ -30,7 +30,7 @@
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.amqo.randomuser.ui.list.ItemListActivity"
-        tools:listitem="@layout/item_list_content"/>
+        tools:listitem="@layout/item_random_user"/>
 
     <FrameLayout
         android:id="@+id/item_detail_container"

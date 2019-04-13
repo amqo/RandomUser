@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.amqo.randomuser.R
 import com.amqo.randomuser.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.consume
@@ -11,22 +12,22 @@ import com.amqo.randomuser.ui.base.ScopedActivity
 import com.amqo.randomuser.ui.detail.ItemDetailActivity
 import com.amqo.randomuser.ui.detail.ItemDetailFragment
 import com.google.android.material.snackbar.Snackbar
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_item_list.*
 import kotlinx.android.synthetic.main.item_list.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 
-class ItemListActivity : ScopedActivity(), KodeinAware {
+class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.RandomUsersListener {
 
     override val kodein by closestKodein()
     private val viewModelFactory: RandomUserListViewModelFactory by instance()
 
     private lateinit var viewModel: RandomUserListViewModel
+    private lateinit var adapterRandomUsers: RandomUsersAdapter
 
     private var twoPane: Boolean = false
 
@@ -53,40 +54,40 @@ class ItemListActivity : ScopedActivity(), KodeinAware {
         bindUI()
     }
 
+    // RandomUsersAdapter.RandomUsersListener functions
+
+    override fun onRandomUserSelected(randomUser: RandomUserEntry) {
+        showRandomUserDetail(randomUser)
+    }
+
+    override fun onRemoveRandomUser(randomUser: RandomUserEntry) {
+        runBlocking(Dispatchers.IO) {
+            viewModel.removeUser(randomUser)
+        }
+    }
+
+    // Private functions
+
     private fun bindUI() = launch(Dispatchers.Main) {
-        consume(viewModel.randomUsers, { randomUsers ->
-            initRecyclerView(randomUsers.toRandomUserItems())
+        val linearLayoutManager = LinearLayoutManager(
+            this@ItemListActivity, RecyclerView.VERTICAL, false)
+        adapterRandomUsers = RandomUsersAdapter(this@ItemListActivity)
+        item_list.apply {
+            layoutManager = linearLayoutManager
+            adapter = adapterRandomUsers
+        }
+        consume(viewModel.randomUsers, {
+            adapterRandomUsers.submitList(it)
         })
     }
 
-    private fun List<RandomUserEntry>.toRandomUserItems() : List<RandomUserItem> {
-        return this.map {
-            RandomUserItem(it)
-        }
-    }
-
-    private fun initRecyclerView(items: List<RandomUserItem>) {
-        val groupAdapter = GroupAdapter<ViewHolder>().apply {
-            addAll(items)
-        }
-        item_list.apply {
-            layoutManager = LinearLayoutManager(this@ItemListActivity)
-            adapter = groupAdapter
-        }
-        groupAdapter.setOnItemClickListener { item, _ ->
-            (item as? RandomUserItem)?.let {
-                showRandomUserDetail(item)
-            }
-        }
-    }
-
     private fun showRandomUserDetail(
-        item: RandomUserItem
+        randomUser: RandomUserEntry
     ): Any {
         return if (twoPane) {
             val fragment = ItemDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ItemDetailFragment.ARG_USER_ID, item.randomUserEntry.login.uuid)
+                    putString(ItemDetailFragment.ARG_USER_ID, randomUser.login.uuid)
                 }
             }
             supportFragmentManager
@@ -95,7 +96,7 @@ class ItemListActivity : ScopedActivity(), KodeinAware {
                 .commit()
         } else {
             val intent = Intent(this, ItemDetailActivity::class.java).apply {
-                putExtra(ItemDetailFragment.ARG_USER_ID, item.randomUserEntry.login.uuid)
+                putExtra(ItemDetailFragment.ARG_USER_ID, randomUser.login.uuid)
             }
             startActivity(intent)
         }

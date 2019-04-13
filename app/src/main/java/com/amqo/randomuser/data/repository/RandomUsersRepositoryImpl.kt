@@ -1,8 +1,10 @@
 package com.amqo.randomuser.data.repository
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import com.amqo.randomuser.data.network.RandomUsersNetworkDataSource
 import com.amqo.randomuser.data.network.response.RandomUsersResponse
+import com.amqo.randomuser.data.repository.RandomUsersRepository.Companion.PAGES_RANDOM_USERS_SIZE
 import com.amqo.randomuser.db.RandomUsersDao
 import com.amqo.randomuser.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.observeForever
@@ -23,18 +25,24 @@ class RandomUsersRepositoryImpl(
         }
     }
 
-    override suspend fun getRandomUsers(number: Int): LiveData<out List<RandomUserEntry>> {
-        randomUsersNetworkDataSource.fetchRandomUsers(number)
-        return randomUsersDao.getRandomUsers(number)
+    override suspend fun getNewRandomUsers() {
+        randomUsersNetworkDataSource.fetchRandomUsers(PAGES_RANDOM_USERS_SIZE)
+    }
+
+    override suspend fun getRandomUsers(): DataSource.Factory<Int, RandomUserEntry> {
+        return randomUsersDao.getAllPaged()
     }
 
     override suspend fun getRandomUserWithId(id: String): LiveData<out RandomUserEntry> {
-        return randomUsersDao.getRandomUserWithId(id)
+        return randomUsersDao.getWithId(id)
+    }
+
+    override suspend fun deleteRandomUserWithId(id: String) {
+        randomUsersDao.deleteWithId(id)
     }
 
     private fun persistFetchedRandomUsers(fetchedRandomUsers: RandomUsersResponse) {
         GlobalScope.launch(Dispatchers.IO) {
-            randomUsersDao.deleteAll()
             randomUsersDao.insert(fetchedRandomUsers.results)
         }
     }

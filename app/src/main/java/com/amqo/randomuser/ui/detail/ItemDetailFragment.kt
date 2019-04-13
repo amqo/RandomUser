@@ -22,7 +22,7 @@ class ItemDetailFragment : ScopedFragment(), KodeinAware {
 
     companion object {
 
-        const val ARG_USER_ID = "user_id"
+        const val ARG_USER_ID = "arg_user_id"
     }
 
     override val kodein by closestKodein()

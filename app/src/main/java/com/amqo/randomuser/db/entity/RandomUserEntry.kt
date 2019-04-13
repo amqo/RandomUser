@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.amqo.randomuser.data.network.response.*
 
-@Entity(tableName = "random_user")
+@Entity(tableName = "random_users")
 data class RandomUserEntry(
     @PrimaryKey @Embedded(prefix = "user_")
     val login: Login,
@@ -20,9 +20,11 @@ data class RandomUserEntry(
     @Embedded(prefix = "picture_")
     val picture: Picture,
     @Embedded(prefix = "registered_")
-    val registered: Registered
+    val registered: Registered,
+    val removed: Boolean = false
 ) {
-    fun getId(): String {
+
+    fun getId() : String {
         return login.uuid
     }
 
