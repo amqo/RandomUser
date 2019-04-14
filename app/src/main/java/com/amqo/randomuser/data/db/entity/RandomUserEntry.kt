@@ -1,4 +1,4 @@
-package com.amqo.randomuser.db.entity
+package com.amqo.randomuser.data.db.entity
 
 import androidx.room.Embedded
 import androidx.room.Entity

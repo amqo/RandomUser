@@ -3,8 +3,8 @@ package com.amqo.randomuser.ui.list
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.databinding.RandomUserItemBinding
-import com.amqo.randomuser.db.entity.RandomUserEntry
 
 class RandomUserViewHolder(
     private val binding: RandomUserItemBinding

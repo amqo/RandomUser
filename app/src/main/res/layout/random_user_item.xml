@@ -6,11 +6,11 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.amqo.randomuser.db.entity.RandomUserEntry"/>
+        <import type="com.amqo.randomuser.data.db.entity.RandomUserEntry"/>
 
         <variable
             name="randomUser"
-            type="com.amqo.randomuser.db.entity.RandomUserEntry"/>
+            type="com.amqo.randomuser.data.db.entity.RandomUserEntry"/>
     </data>
 
     <androidx.cardview.widget.CardView

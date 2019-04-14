@@ -1,4 +1,4 @@
-package com.amqo.randomuser.db
+package com.amqo.randomuser.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
@@ -6,7 +6,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.amqo.randomuser.db.entity.RandomUserEntry
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
 
 @Dao
 interface RandomUsersDao {

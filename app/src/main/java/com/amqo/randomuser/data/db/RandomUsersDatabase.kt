@@ -1,10 +1,10 @@
-package com.amqo.randomuser.db
+package com.amqo.randomuser.data.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.amqo.randomuser.db.entity.RandomUserEntry
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
 
 @Database(
     entities = [RandomUserEntry::class],

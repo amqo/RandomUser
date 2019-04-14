@@ -7,9 +7,9 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import androidx.lifecycle.ViewModel
 import com.amqo.randomuser.R
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
+import com.amqo.randomuser.data.domain.GetRandomUserWithIdUseCase
 import com.amqo.randomuser.data.network.ApiSecret
-import com.amqo.randomuser.data.repository.RandomUsersRepository
-import com.amqo.randomuser.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.lazyDeferred
 import com.amqo.randomuser.ui.base.ResourceProvider
 import java.text.SimpleDateFormat
@@ -17,12 +17,12 @@ import java.util.*
 
 class RandomUserViewModel(
     private val userId: String,
-    private val randomUsersRepository: RandomUsersRepository,
+    private val getRandomUserWithIdUseCase: GetRandomUserWithIdUseCase,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
 
     val randomUser by lazyDeferred {
-        randomUsersRepository.getRandomUserWithId(userId)
+        getRandomUserWithIdUseCase.execute(userId)
     }
 
     fun getRegisteredMessage(

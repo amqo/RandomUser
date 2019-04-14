@@ -2,7 +2,7 @@ package com.amqo.randomuser.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
-import com.amqo.randomuser.db.entity.RandomUserEntry
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
 
 interface RandomUsersRepository {
 
@@ -19,9 +19,9 @@ interface RandomUsersRepository {
         id: String
     ): LiveData<out RandomUserEntry>
 
-    suspend fun deleteRandomUserWithId(id: String)
+    fun deleteRandomUserWithId(id: String)
 
-    fun filterUsersWithSearch(
+    fun searchRandomUsers(
         search: String
     ): DataSource.Factory<Int, RandomUserEntry>
 }

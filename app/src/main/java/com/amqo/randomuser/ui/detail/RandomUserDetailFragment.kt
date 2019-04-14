@@ -18,7 +18,6 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.factory
 
-
 class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
 
     companion object {

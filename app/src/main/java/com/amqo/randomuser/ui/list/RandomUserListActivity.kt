@@ -2,7 +2,6 @@ package com.amqo.randomuser.ui.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -10,7 +9,7 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amqo.randomuser.R
-import com.amqo.randomuser.db.entity.RandomUserEntry
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.afterTextChanged
 import com.amqo.randomuser.internal.consume
 import com.amqo.randomuser.internal.hideKeyboard
@@ -70,9 +69,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         hideKeyboard()
         Snackbar.make(frameLayout, "Please confirm, are you sure?", Snackbar.LENGTH_LONG)
             .setAction("Remove") {
-                launch {
-                    viewModel.removeUser(randomUser)
-                }
+                viewModel.removeUser(randomUser)
             }.show()
     }
 
@@ -89,7 +86,6 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         launch {
             consume(viewModel.randomUsers, {
                 usersPagedList = it
-                Log.e("TEST", "Posting new list with size ${usersPagedList.size}")
                 if (search.query.isEmpty()) {
                     no_results_container.visibility = View.GONE
                     adapterRandomUserList.submitList(usersPagedList)

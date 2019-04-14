@@ -1,10 +1,9 @@
 package com.amqo.randomuser.ui.list
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.amqo.randomuser.db.entity.RandomUserEntry
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import kotlinx.android.synthetic.main.random_user_item.view.*
 
 class RandomUserListAdapter(
@@ -17,7 +16,6 @@ class RandomUserListAdapter(
 
     override fun onBindViewHolder(holder: RandomUserViewHolder, position: Int) {
         val randomUser = getItem(position)
-        Log.e("TEST", "Biding position $position")
         randomUser?.let {
             holder.itemView.setOnClickListener {
                 randomUsersListener.onRandomUserSelected(randomUser)

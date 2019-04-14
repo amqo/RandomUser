@@ -1,13 +1,13 @@
 package com.amqo.randomuser.ui.list
 
 import androidx.paging.PagedList
-import com.amqo.randomuser.data.repository.RandomUsersRepository
-import com.amqo.randomuser.db.entity.RandomUserEntry
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
+import com.amqo.randomuser.data.domain.GetNewRandomUsersUseCase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class RandomUserListBoundaryCallback(
-    private val randomUsersRepository: RandomUsersRepository
+    private val getNewRandomUsersUseCase: GetNewRandomUsersUseCase
 ) : PagedList.BoundaryCallback<RandomUserEntry>() {
 
     override fun onItemAtEndLoaded(itemAtEnd: RandomUserEntry) {
@@ -20,7 +20,7 @@ class RandomUserListBoundaryCallback(
 
     private fun getNewRandomUsers() {
         GlobalScope.launch {
-            randomUsersRepository.getNewRandomUsers()
+            getNewRandomUsersUseCase.execute()
         }
     }
 }

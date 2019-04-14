@@ -2,11 +2,11 @@ package com.amqo.randomuser.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
+import com.amqo.randomuser.data.db.RandomUsersDao
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.network.RandomUsersNetworkDataSource
 import com.amqo.randomuser.data.network.response.RandomUsersResponse
 import com.amqo.randomuser.data.repository.RandomUsersRepository.Companion.PAGES_RANDOM_USERS_SIZE
-import com.amqo.randomuser.db.RandomUsersDao
-import com.amqo.randomuser.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.observeForever
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -39,11 +39,11 @@ class RandomUsersRepositoryImpl(
         return randomUsersDao.getWithId(id)
     }
 
-    override suspend fun deleteRandomUserWithId(id: String) {
+    override fun deleteRandomUserWithId(id: String) {
         randomUsersDao.deleteWithId(id)
     }
 
-    override fun filterUsersWithSearch(
+    override fun searchRandomUsers(
         search: String
     ): DataSource.Factory<Int, RandomUserEntry> {
         return randomUsersDao.getWithSearch(search)
