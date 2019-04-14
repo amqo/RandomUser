@@ -10,6 +10,10 @@
         <variable
             name="randomUser"
             type="com.amqo.randomuser.db.entity.RandomUserEntry"/>
+
+        <variable
+            name="randomUserInteractor"
+            type="com.amqo.randomuser.ui.detail.RandomUserDetailFragment.UserDetailInteractor"/>
     </data>
 
     <RelativeLayout
@@ -20,7 +24,8 @@
             android:id="@+id/user_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/margin_large"
             android:layout_marginTop="@dimen/margin_large"
             android:layout_marginBottom="@dimen/margin_small"
             app:circleImageUrl="@{randomUser.picture.large}"
@@ -32,21 +37,23 @@
             android:layout_width="wrap_content"
             style="?android:attr/textAppearanceLarge"
             android:drawableStart="@drawable/ic_gender_black_24dp"
-            android:layout_below="@+id/user_image"
-            android:layout_centerHorizontal="true"
+            android:layout_alignTop="@+id/user_image"
+            android:layout_toEndOf="@+id/user_image"
+            android:layout_marginStart="@dimen/margin_medium"
             android:drawablePadding="@dimen/padding_small"
-            android:text="@{randomUser.genderCapitalized}"
-            android:layout_marginTop="@dimen/margin_medium"/>
+            android:text="@{randomUser.genderCapitalized}"/>
 
         <TextView
             android:id="@+id/user_mail"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            style="?android:attr/textAppearanceLarge"
+            style="?android:attr/textAppearanceMedium"
             android:layout_marginTop="@dimen/margin_medium"
-            android:layout_below="@+id/user_gender"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_below="@+id/user_image"
             android:layout_centerHorizontal="true"
-            android:text="@{randomUser.email}"
+            android:text="@{randomUserInteractor.getMailFormatted()}"
+            android:onClick="@{() -> randomUserInteractor.navigateToSendMail()}"
             android:textIsSelectable="true"
             tools:context=".ui.detail.RandomUserDetailFragment"/>
 
@@ -58,9 +65,21 @@
             android:layout_marginTop="@dimen/margin_medium"
             android:layout_below="@+id/user_mail"
             android:layout_centerHorizontal="true"
-            android:text="@{`Registered since ` + randomUser.dateFormatted}"
+            android:text="@{randomUserInteractor.getRegisteredMessage()}"
             android:textIsSelectable="true"
             tools:context=".ui.detail.RandomUserDetailFragment"/>
+
+        <ImageView
+            android:id="@+id/map_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/user_registered"
+            android:layout_margin="@dimen/margin_medium"
+            app:imageUrl="@{randomUserInteractor.getMapUrl()}"
+            android:onClick="@{() -> randomUserInteractor.navigateToUserLocation()}"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"/>
 
     </RelativeLayout>
 

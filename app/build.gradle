@@ -63,9 +63,6 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
 
-    // DateTime-time support
-    implementation "com.jakewharton.threetenabp:threetenabp:1.1.0"
-
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"

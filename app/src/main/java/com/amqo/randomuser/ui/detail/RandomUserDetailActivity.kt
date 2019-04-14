@@ -1,21 +1,15 @@
 package com.amqo.randomuser.ui.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.amqo.randomuser.R
 import com.amqo.randomuser.databinding.ActivityRandomUserDetailBinding
-import com.amqo.randomuser.ui.list.RandomUserListActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_random_user_detail.*
 
-/**
- * An activity representing a single Item detail screen. This
- * activity is only used on narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a [RandomUserListActivity].
- */
 class RandomUserDetailActivity : AppCompatActivity() {
 
     private lateinit var activityMainBinding: ActivityRandomUserDetailBinding
@@ -29,8 +23,10 @@ class RandomUserDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            Snackbar.make(view, "Please confirm, are you sure?", Snackbar.LENGTH_LONG)
+                .setAction("Remove") {
+                    Log.e("TEST", "Removed")
+                }.show()
         }
         if (savedInstanceState == null) {
             addDetailFragment()

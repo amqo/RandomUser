@@ -4,8 +4,6 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.amqo.randomuser.data.network.response.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Entity(tableName = "random_users")
 data class RandomUserEntry(
@@ -32,12 +30,6 @@ data class RandomUserEntry(
 
     fun getGenderCapitalized(): String {
         return gender.capitalize()
-    }
-
-    fun getDateFormatted(): String {
-        val originalDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS'Z'", Locale.getDefault())
-        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
-        return simpleDateFormat.format(originalDateFormat.parse(registered.date))
     }
 
     fun getFullName() : String {

@@ -73,6 +73,14 @@ fun ImageView.setCircleImageUrl(
         .placeholder(R.drawable.ic_account_circle_black_60dp).into(this)
 }
 
+@BindingAdapter("imageUrl")
+fun ImageView.setImageUrl(
+    url: String?
+) {
+    GlideApp.with(context).load(url).placeholder(
+        R.drawable.ic_account_circle_black_60dp).into(this)
+}
+
 // Private functions
 
 private fun Context.hideKeyboard(
