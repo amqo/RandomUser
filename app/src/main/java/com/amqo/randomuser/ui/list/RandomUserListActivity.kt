@@ -34,6 +34,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
 
     private val viewModelFactory: RandomUserListViewModelFactory by instance()
     private var twoPane: Boolean = false
+    private var selectedRandomUser: RandomUserEntry? = null
 
     private lateinit var viewModel: RandomUserListViewModel
     private lateinit var adapterRandomUserList: RandomUserListAdapter
@@ -51,6 +52,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         twoPane = item_detail_container != null
 
         initRandomUsersAdapter()
+        consumeRandomUsers()
         initSearchListener()
     }
 
@@ -63,6 +65,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
     // RandomUserListAdapter.RandomUsersListener functions
 
     override fun onRandomUserSelected(randomUser: RandomUserEntry) {
+        selectedRandomUser = randomUser
         showRandomUserDetail(randomUser)
     }
 
@@ -83,9 +86,18 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
             adapter = adapterRandomUserList
             addSwipeToRemove()
         }
+    }
+
+    private fun consumeRandomUsers() {
         launch {
             consume(viewModel.randomUsers, {
                 usersPagedList = it
+                if (twoPane && !usersPagedList.contains(selectedRandomUser)) {
+                    adapterRandomUserList.currentList?.first()?.let { firstUser ->
+                        item_list.scrollToPosition(0)
+                        onRandomUserSelected(firstUser)
+                    }
+                }
                 if (search.query.isEmpty()) {
                     no_results_container.visibility = View.GONE
                     adapterRandomUserList.submitList(usersPagedList)
@@ -113,7 +125,6 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         search.clearFocus()
         search.afterTextChanged {
             if (it.isEmpty()) {
-                search.clearFocus()
                 no_results_container.visibility = View.GONE
                 adapterRandomUserList.submitList(usersPagedList)
             } else {
@@ -127,7 +138,6 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
             Observer { filteredRandomUsers ->
                 adapterRandomUserList.submitList(filteredRandomUsers)
                 if (filteredRandomUsers.isNotEmpty()) {
-                    search.clearFocus()
                     no_results_container.visibility = View.GONE
                 } else {
                     no_results_container.visibility = View.VISIBLE

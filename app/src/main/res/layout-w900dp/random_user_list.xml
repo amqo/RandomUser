@@ -44,13 +44,14 @@
                 android:id="@+id/no_results_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|center"
+                android:layout_gravity="center_horizontal|top"
                 android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="@dimen/margin_large"
                     android:layout_gravity="top|center"
                     android:src="@drawable/placeholder_no_results"/>
 
@@ -58,9 +59,10 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     style="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_medium"
                     android:drawablePadding="@dimen/padding_small"
-                    android:text="Sorry, No Results!"
-                    android:layout_marginTop="@dimen/margin_medium"/>
+                    android:text="Sorry, no results!"/>
 
             </LinearLayout>
 
