@@ -1,12 +1,14 @@
 package com.amqo.randomuser.internal
 
 import android.os.Handler
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.EditText
+import android.widget.ImageView
+import android.widget.SearchView
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.amqo.randomuser.R
+import com.amqo.randomuser.ui.base.GlideApp
 import kotlinx.coroutines.Deferred
 
 fun <T : Any, L : LiveData<out T>> observeForever(
@@ -34,21 +36,35 @@ suspend fun <T : Any, L : Deferred<LiveData<out T>>> LifecycleOwner.consume(
     })
 }
 
-fun EditText.afterTextChanged(
+fun SearchView.afterTextChanged(
     afterTextChanged: (String) -> Unit
 ) {
-    this.addTextChangedListener(object : TextWatcher {
+    this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         private var handler = Handler()
         private val DELAY: Long = 1000
         private val runnable = Runnable {
-            afterTextChanged.invoke(text.toString())
+            afterTextChanged.invoke(query.toString())
         }
-
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-        override fun afterTextChanged(editable: Editable?) {
+        override fun onQueryTextChange(text: String?): Boolean {
             handler.removeCallbacks(runnable)
             handler.postDelayed(runnable, DELAY)
+            return true
+        }
+        override fun onQueryTextSubmit(text: String?): Boolean {
+            afterTextChanged.invoke(text.toString())
+            return true
         }
     })
+}
+
+@BindingAdapter("imageUrl")
+fun ImageView.setImageUrl(url: String?) {
+    GlideApp.with(context).load(url)
+        .placeholder(R.drawable.ic_account_circle_black_60dp).into(this)
+}
+
+@BindingAdapter("circleImageUrl")
+fun ImageView.setCircleImageUrl(url: String?) {
+    GlideApp.with(context).load(url).circleCrop()
+        .placeholder(R.drawable.ic_account_circle_black_60dp).into(this)
 }

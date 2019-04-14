@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.amqo.randomuser.R
 import com.amqo.randomuser.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.afterTextChanged
 import com.amqo.randomuser.internal.consume
@@ -15,14 +14,15 @@ import com.amqo.randomuser.internal.observeOnce
 import com.amqo.randomuser.ui.base.ScopedActivity
 import com.amqo.randomuser.ui.detail.ItemDetailActivity
 import com.amqo.randomuser.ui.detail.ItemDetailFragment
-import kotlinx.android.synthetic.main.activity_item_list.*
-import kotlinx.android.synthetic.main.item_list.*
+import kotlinx.android.synthetic.main.activity_random_user_list.*
+import kotlinx.android.synthetic.main.random_user_list.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+
 
 class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.RandomUsersListener {
 
@@ -37,8 +37,9 @@ class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.Rando
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_item_list)
+        setContentView(com.amqo.randomuser.R.layout.activity_random_user_list)
         setSupportActionBar(toolbar)
+//        supportPostponeEnterTransition()
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(RandomUserListViewModel::class.java)
@@ -65,17 +66,23 @@ class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.Rando
     // Private functions
 
     private fun initSearchListener() {
+        search.onActionViewExpanded()
+        search.clearFocus()
         search.afterTextChanged {
             search.clearFocus()
             if (it.isEmpty()) {
                 adapterRandomUsers.submitList(usersPagedList)
             } else {
-                viewModel.buildFilteredRandomUsers(it).observeOnce(this@ItemListActivity,
-                    Observer { filteredRandomUsers ->
-                        adapterRandomUsers.submitList(filteredRandomUsers)
-                    })
+                getFilteredRandomUsers(it)
             }
         }
+    }
+
+    private fun getFilteredRandomUsers(search: String) {
+        viewModel.getFilteredRandomUsers(search).observeOnce(this@ItemListActivity,
+            Observer { filteredRandomUsers ->
+                adapterRandomUsers.submitList(filteredRandomUsers)
+            })
     }
 
     private fun initRandomUsersAdapter()= launch(Dispatchers.Main) {
@@ -88,7 +95,11 @@ class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.Rando
         }
         consume(viewModel.randomUsers, {
             usersPagedList = it
-            adapterRandomUsers.submitList(usersPagedList)
+            if (search.query.isEmpty()) {
+                adapterRandomUsers.submitList(usersPagedList)
+            } else {
+                getFilteredRandomUsers(search.query.toString())
+            }
         })
     }
 
@@ -103,12 +114,16 @@ class ItemListActivity : ScopedActivity(), KodeinAware, RandomUsersAdapter.Rando
             }
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.item_detail_container, fragment)
+//                .addSharedElement(user_image, randomUser.getId())
+                .replace(com.amqo.randomuser.R.id.item_detail_container, fragment)
                 .commit()
         } else {
             val intent = Intent(this, ItemDetailActivity::class.java).apply {
-                putExtra(ItemDetailFragment.ARG_USER_ID, randomUser.login.uuid)
+                putExtra(ItemDetailFragment.ARG_USER_ID, randomUser.getId())
             }
+//            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                this, user_image as View, randomUser.getId())
+//            startActivity(intent, options.toBundle())
             startActivity(intent)
         }
     }

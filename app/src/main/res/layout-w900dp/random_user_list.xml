@@ -8,10 +8,13 @@
     android:showDividers="middle"
     android:orientation="vertical">
 
-    <EditText
+    <SearchView
         android:id="@+id/search"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search Users"
         android:layout_margin="16dp"
         android:hint="Search"/>
 
@@ -38,7 +41,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             tools:context="com.amqo.randomuser.ui.list.ItemListActivity"
-            tools:listitem="@layout/item_random_user"/>
+            tools:listitem="@layout/random_user_item"/>
 
         <FrameLayout
             android:id="@+id/item_detail_container"

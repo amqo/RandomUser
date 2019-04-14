@@ -8,9 +8,10 @@ import androidx.lifecycle.ViewModelProviders
 import com.amqo.randomuser.R
 import com.amqo.randomuser.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.consume
+import com.amqo.randomuser.ui.base.GlideApp
 import com.amqo.randomuser.ui.base.ScopedFragment
-import kotlinx.android.synthetic.main.activity_item_detail.*
-import kotlinx.android.synthetic.main.item_detail.*
+import kotlinx.android.synthetic.main.activity_random_user_detail.*
+import kotlinx.android.synthetic.main.random_user_detail.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -36,17 +37,25 @@ class ItemDetailFragment : ScopedFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
 
         val userId = arguments?.getString(ARG_USER_ID, "") as String
+        user_image.transitionName = userId
         viewModel = ViewModelProviders.of(this, viewModelFactoryInstanceFactory(userId))
             .get(RandomUserViewModel::class.java)
 
         bindUI()
     }
 
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        postponeEnterTransition()
+//        sharedElementEnterTransition = TransitionInflater.from(context)
+//            .inflateTransition(android.R.transition.move)
+//    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.item_detail, container, false)
+        return inflater.inflate(R.layout.random_user_detail, container, false)
     }
 
     private fun bindUI() = launch(Dispatchers.Main) {
@@ -54,6 +63,11 @@ class ItemDetailFragment : ScopedFragment(), KodeinAware {
             item = randomUser
             activity?.toolbar_layout?.title = randomUser.getFullName()
             item_detail.text = randomUser.email
+            context?.let {
+                GlideApp.with(it).load(randomUser.picture.large).circleCrop()
+                    .placeholder(R.drawable.ic_account_circle_black_60dp).into(user_image)
+//                startPostponedEnterTransition()
+            }
         })
     }
 }

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.amqo.randomuser.R
 import com.amqo.randomuser.ui.list.ItemListActivity
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_item_detail.*
+import kotlinx.android.synthetic.main.activity_random_user_detail.*
 
 /**
  * An activity representing a single Item detail screen. This
@@ -18,7 +18,7 @@ class ItemDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_item_detail)
+        setContentView(R.layout.activity_random_user_detail)
         setSupportActionBar(detail_toolbar)
 
         fab.setOnClickListener { view ->

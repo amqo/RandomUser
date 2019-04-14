@@ -15,14 +15,14 @@ class RandomUserListViewModel(
 ) : ViewModel() {
 
     val randomUsers by lazyDeferred {
-        buildRandomUsers()
+        getRandomUsers()
     }
 
     suspend fun removeUser(randomUser: RandomUserEntry) {
         randomUsersRepository.deleteRandomUserWithId(randomUser.getId())
     }
 
-    fun buildFilteredRandomUsers(
+    fun getFilteredRandomUsers(
         search: String
     ): LiveData<PagedList<RandomUserEntry>> {
         val factory: DataSource.Factory<Int, RandomUserEntry> = filterUsersWithSearch("%$search%")
@@ -37,7 +37,7 @@ class RandomUserListViewModel(
         return randomUsersRepository.filterUsersWithSearch(search)
     }
 
-    private fun buildRandomUsers(): LiveData<PagedList<RandomUserEntry>> {
+    private fun getRandomUsers(): LiveData<PagedList<RandomUserEntry>> {
         val factory: DataSource.Factory<Int, RandomUserEntry> = randomUsersRepository.getRandomUsers()
         val pagedListBuilder: LivePagedListBuilder<Int, RandomUserEntry> =
             LivePagedListBuilder<Int, RandomUserEntry>(factory, PAGES_RANDOM_USERS_SIZE)
