@@ -3,7 +3,8 @@ package com.amqo.randomuser.ui.list
 import androidx.paging.PagedList
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import com.amqo.randomuser.db.entity.RandomUserEntry
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class RandomUserListBoundaryCallback(
     private val randomUsersRepository: RandomUsersRepository
@@ -18,7 +19,7 @@ class RandomUserListBoundaryCallback(
     }
 
     private fun getNewRandomUsers() {
-        runBlocking {
+        GlobalScope.launch {
             randomUsersRepository.getNewRandomUsers()
         }
     }

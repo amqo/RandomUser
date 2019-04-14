@@ -2,6 +2,7 @@ package com.amqo.randomuser.ui.list
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -20,9 +21,7 @@ import com.amqo.randomuser.ui.detail.RandomUserDetailFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_random_user_list.*
 import kotlinx.android.synthetic.main.random_user_list.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -71,7 +70,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         hideKeyboard()
         Snackbar.make(frameLayout, "Please confirm, are you sure?", Snackbar.LENGTH_LONG)
             .setAction("Remove") {
-                runBlocking(Dispatchers.IO) {
+                launch {
                     viewModel.removeUser(randomUser)
                 }
             }.show()
@@ -79,7 +78,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
 
     // Private functions
 
-    private fun initRandomUsersAdapter()= launch(Dispatchers.Main) {
+    private fun initRandomUsersAdapter() {
         val linearLayoutManager = LinearLayoutManager(
             this@RandomUserListActivity, RecyclerView.VERTICAL, false)
         adapterRandomUserList = RandomUserListAdapter(this@RandomUserListActivity)
@@ -87,15 +86,18 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
             layoutManager = linearLayoutManager
             adapter = adapterRandomUserList
         }
-        consume(viewModel.randomUsers, {
-            usersPagedList = it
-            if (search.query.isEmpty()) {
-                no_results_container.visibility = View.GONE
-                adapterRandomUserList.submitList(usersPagedList)
-            } else {
-                getFilteredRandomUsers(search.query.toString())
-            }
-        })
+        launch {
+            consume(viewModel.randomUsers, {
+                usersPagedList = it
+                Log.e("TEST", "Posting new list with size ${usersPagedList.size}")
+                if (search.query.isEmpty()) {
+                    no_results_container.visibility = View.GONE
+                    adapterRandomUserList.submitList(usersPagedList)
+                } else {
+                    getFilteredRandomUsers(search.query.toString())
+                }
+            })
+        }
     }
 
     private fun initSearchListener() {

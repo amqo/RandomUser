@@ -7,6 +7,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import androidx.lifecycle.ViewModel
 import com.amqo.randomuser.R
+import com.amqo.randomuser.data.network.ApiSecret
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import com.amqo.randomuser.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.lazyDeferred
@@ -56,6 +57,6 @@ class RandomUserViewModel(
     ): String {
         return "https://maps.googleapis.com/maps/api/staticmap?center=" +
                 "${randomUser.location.coordinates.latitude},${randomUser.location.coordinates.longitude}" +
-                "&zoom=14&size=800x400&key=AIzaSyDdAVZuR18LjK1edIDx5rwvhP4Oh3FbraE"
+                "&zoom=14&size=800x400&key=${ApiSecret.GOOGLE_MAPS_API_KEY}"
     }
 }

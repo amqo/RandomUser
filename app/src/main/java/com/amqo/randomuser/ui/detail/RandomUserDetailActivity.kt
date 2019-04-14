@@ -22,12 +22,7 @@ class RandomUserDetailActivity : AppCompatActivity() {
         setSupportActionBar(detail_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Please confirm, are you sure?", Snackbar.LENGTH_LONG)
-                .setAction("Remove") {
-                    Log.e("TEST", "Removed")
-                }.show()
-        }
+        initFabRemoveButton()
         if (savedInstanceState == null) {
             addDetailFragment()
         }
@@ -42,6 +37,15 @@ class RandomUserDetailActivity : AppCompatActivity() {
         }
 
     // Private functions
+
+    private fun initFabRemoveButton() {
+        fab.setOnClickListener { view ->
+            Snackbar.make(view, "Please confirm, are you sure?", Snackbar.LENGTH_LONG)
+                .setAction("Remove") {
+                    Log.e("TEST", "Removed")
+                }.show()
+        }
+    }
 
     private fun addDetailFragment() {
         val fragment = RandomUserDetailFragment().apply {

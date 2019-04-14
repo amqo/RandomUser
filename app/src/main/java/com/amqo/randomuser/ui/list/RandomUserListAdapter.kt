@@ -1,5 +1,6 @@
 package com.amqo.randomuser.ui.list
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -16,6 +17,7 @@ class RandomUserListAdapter(
 
     override fun onBindViewHolder(holder: RandomUserViewHolder, position: Int) {
         val randomUser = getItem(position)
+        Log.e("TEST", "Biding position $position")
         randomUser?.let {
             holder.itemView.setOnClickListener {
                 randomUsersListener.onRandomUserSelected(randomUser)
@@ -23,8 +25,6 @@ class RandomUserListAdapter(
             holder.itemView.remove_user_button.setOnClickListener {
                 randomUsersListener.onRemoveRandomUser(randomUser)
             }
-//            GlideApp.with(holder.itemView.context).load(randomUser.picture.large).circleCrop()
-//                .placeholder(R.drawable.ic_account_circle_black_60dp).into(holder.itemView.user_image)
             holder.bind(randomUser)
         }
     }
