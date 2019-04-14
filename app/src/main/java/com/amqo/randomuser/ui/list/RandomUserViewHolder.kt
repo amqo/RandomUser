@@ -22,4 +22,6 @@ class RandomUserViewHolder(
         binding.randomUser = randomUser
         binding.executePendingBindings()
     }
+
+    fun getRandomUser(): RandomUserEntry? = binding.randomUser
 }

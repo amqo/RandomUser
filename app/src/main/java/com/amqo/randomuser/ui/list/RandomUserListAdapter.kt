@@ -7,7 +7,7 @@ import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import kotlinx.android.synthetic.main.random_user_item.view.*
 
 class RandomUserListAdapter(
-    private val randomUsersListener: RandomUsersListener
+    private val randomUsersListener: RandomUsersListener?
 ) : PagedListAdapter<RandomUserEntry, RandomUserViewHolder>(randomUserDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RandomUserViewHolder {
@@ -18,10 +18,10 @@ class RandomUserListAdapter(
         val randomUser = getItem(position)
         randomUser?.let {
             holder.itemView.setOnClickListener {
-                randomUsersListener.onRandomUserSelected(randomUser)
+                randomUsersListener?.onRandomUserSelected(randomUser)
             }
-            holder.itemView.remove_user_button.setOnClickListener {
-                randomUsersListener.onRemoveRandomUser(randomUser)
+            holder.itemView.user_phone_text.setOnClickListener {
+                randomUsersListener?.onDialRandomUserNumber(randomUser)
             }
             holder.bind(randomUser)
         }
@@ -44,6 +44,6 @@ class RandomUserListAdapter(
 
         fun onRandomUserSelected(randomUser: RandomUserEntry)
 
-        fun onRemoveRandomUser(randomUser: RandomUserEntry)
+        fun onDialRandomUserNumber(randomUser: RandomUserEntry)
     }
 }

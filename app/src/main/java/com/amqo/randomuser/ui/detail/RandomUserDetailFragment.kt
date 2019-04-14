@@ -7,8 +7,10 @@ import android.text.Spannable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
+import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.databinding.FragmentRandomUserDetailBinding
 import com.amqo.randomuser.internal.consume
 import com.amqo.randomuser.ui.base.ScopedFragment
@@ -17,6 +19,7 @@ import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.factory
+
 
 class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
 
@@ -27,7 +30,8 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
     }
 
     override val kodein by closestKodein()
-    private val detailFragmentViewModelFactoryInstanceFactory: ((String) -> RandomUserDetailFragmentViewModelFactory) by factory()
+    private val detailFragmentViewModelFactoryInstanceFactory:
+            ((String) -> RandomUserDetailFragmentViewModelFactory) by factory()
 
     private lateinit var detailFragmentViewModel: RandomUserDetailFragmentViewModel
     private lateinit var binding: FragmentRandomUserDetailBinding
@@ -36,9 +40,9 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
 
         val userId = arguments?.getString(ARG_USER_ID, "") as String
-        detailFragmentViewModel = ViewModelProviders.of(this, detailFragmentViewModelFactoryInstanceFactory(userId))
+        detailFragmentViewModel = ViewModelProviders.of(this,
+            detailFragmentViewModelFactoryInstanceFactory(userId))
             .get(RandomUserDetailFragmentViewModel::class.java)
-
         bindUI()
     }
 
@@ -54,28 +58,43 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
     private fun bindUI() = launch(Dispatchers.Main) {
         consume(detailFragmentViewModel.randomUser, { randomUser ->
             binding.randomUser = randomUser
-            binding.randomUserInteractor = object : UserDetailInteractor {
-                override fun getMailFormatted(): Spannable {
-                    return detailFragmentViewModel.getMailFormatted(randomUser)
-                }
-                override fun getRegisteredMessage(): Spannable {
-                    return detailFragmentViewModel.getRegisteredMessage(randomUser)
-                }
-                override fun getMapUrl(): String {
-                    return detailFragmentViewModel.getMapUrl(randomUser)
-                }
-                override fun navigateToSendMail() {
-                    this@RandomUserDetailFragment.navigateToSendMail()
-                }
-                override fun navigateToUserLocation() {
-                    this@RandomUserDetailFragment.navigateToUserLocation()
-                }
-            }
+            bindInteractor(randomUser)
+            bindNavigator()
             binding.executePendingBindings()
         })
     }
 
-    fun navigateToSendMail() {
+    private fun bindNavigator() {
+        binding.randomUserNavigator = object : UserDetailNavigator {
+            override fun navigateToSendMail() {
+                this@RandomUserDetailFragment.navigateToSendMail()
+            }
+            override fun navigateToUserLocation() {
+                this@RandomUserDetailFragment.navigateToUserLocation()
+            }
+            override fun navigateToUserImage() {
+                this@RandomUserDetailFragment.navigateToUserImage()
+            }
+        }
+    }
+
+    private fun bindInteractor(randomUser: RandomUserEntry) {
+        binding.randomUserInteractor = object : UserDetailInteractor {
+            override fun getMailFormatted(): Spannable {
+                return detailFragmentViewModel.getMailFormatted(randomUser)
+            }
+
+            override fun getRegisteredMessage(): Spannable {
+                return detailFragmentViewModel.getRegisteredMessage(randomUser)
+            }
+
+            override fun getMapUrl(): String {
+                return detailFragmentViewModel.getMapUrl(randomUser)
+            }
+        }
+    }
+
+    private fun navigateToSendMail() {
         binding.randomUser?.let {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
@@ -84,7 +103,7 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    fun navigateToUserLocation() {
+    private fun navigateToUserLocation() {
         activity?.let { activity ->
             binding.randomUser?.let {
                 val gmmIntentUri = Uri.parse(
@@ -101,16 +120,33 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
         }
     }
 
+    private fun navigateToUserImage() {
+        activity?.let{ activity ->
+            binding.randomUser?.let {
+                val intent = Intent(activity, RandomUserImageDetailActivity::class.java)
+                intent.putExtra(RandomUserImageDetailActivity.ARG_USER_IMAGE_URL, it.picture.large)
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    activity, binding.userImage as View, "user_image_transition")
+                startActivity(intent, options.toBundle())
+            }
+        }
+    }
+
     interface UserDetailInteractor {
-
-        fun navigateToSendMail()
-
-        fun navigateToUserLocation()
 
         fun getMapUrl(): String
 
         fun getMailFormatted(): Spannable
 
         fun getRegisteredMessage(): Spannable
+    }
+
+    interface UserDetailNavigator {
+
+        fun navigateToSendMail()
+
+        fun navigateToUserLocation()
+
+        fun navigateToUserImage()
     }
 }

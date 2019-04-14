@@ -73,12 +73,12 @@ fun ImageView.setCircleImageUrl(
         .placeholder(R.drawable.ic_account_circle_black_60dp).into(this)
 }
 
-@BindingAdapter("imageUrl")
-fun ImageView.setImageUrl(
+@BindingAdapter("imageMapUrl")
+fun ImageView.setImageMapUrl(
     url: String?
 ) {
     GlideApp.with(context).load(url).placeholder(
-        R.drawable.ic_account_circle_black_60dp).into(this)
+        R.drawable.ic_map_black_24dp).into(this)
 }
 
 // Private functions

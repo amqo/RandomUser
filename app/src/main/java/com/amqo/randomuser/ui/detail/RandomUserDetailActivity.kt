@@ -28,7 +28,8 @@ class RandomUserDetailActivity : ScopedActivity(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_random_user_detail)
+        activityMainBinding = DataBindingUtil.setContentView(
+            this, R.layout.activity_random_user_detail)
 
         setSupportActionBar(detail_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

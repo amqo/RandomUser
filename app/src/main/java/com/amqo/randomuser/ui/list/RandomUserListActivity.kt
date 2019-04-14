@@ -1,23 +1,24 @@
 package com.amqo.randomuser.ui.list
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.paging.PagedList
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.amqo.randomuser.R
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.afterTextChanged
 import com.amqo.randomuser.internal.consume
 import com.amqo.randomuser.internal.hideKeyboard
 import com.amqo.randomuser.internal.observeOnce
 import com.amqo.randomuser.ui.base.ScopedActivity
+import com.amqo.randomuser.ui.base.SwipeToDeleteHandler
 import com.amqo.randomuser.ui.detail.RandomUserDetailActivity
 import com.amqo.randomuser.ui.detail.RandomUserDetailFragment
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_random_user_list.*
 import kotlinx.android.synthetic.main.random_user_list.*
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +41,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_random_user_list)
+        setContentView(com.amqo.randomuser.R.layout.activity_random_user_list)
         setSupportActionBar(toolbar)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)
@@ -65,15 +66,10 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         showRandomUserDetail(randomUser)
     }
 
-    override fun onRemoveRandomUser(randomUser: RandomUserEntry) {
-        search.clearFocus()
-        hideKeyboard()
-        Snackbar.make(frameLayout, "Please confirm, are you sure?", Snackbar.LENGTH_LONG)
-            .setAction("Remove") {
-                launch(Dispatchers.IO) {
-                    viewModel.removeUser(randomUser)
-                }
-            }.show()
+    override fun onDialRandomUserNumber(randomUser: RandomUserEntry) {
+        val intent = Intent(Intent.ACTION_DIAL)
+        intent.data = Uri.parse("tel:${randomUser.phone}")
+        startActivity(intent)
     }
 
     // Private functions
@@ -85,6 +81,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         item_list.apply {
             layoutManager = linearLayoutManager
             adapter = adapterRandomUserList
+            addSwipeToRemove()
         }
         launch {
             consume(viewModel.randomUsers, {
@@ -97,6 +94,18 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
                 }
             })
         }
+    }
+
+    private fun RecyclerView?.addSwipeToRemove() {
+        ItemTouchHelper(SwipeToDeleteHandler(
+            this@RandomUserListActivity
+        ) {
+            it.getRandomUser()?.let { randomUser ->
+                launch(Dispatchers.IO) {
+                    viewModel.removeUser(randomUser)
+                }
+            }
+        }).attachToRecyclerView(this)
     }
 
     private fun initSearchListener() {
@@ -150,7 +159,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         }
         return supportFragmentManager
             .beginTransaction()
-            .replace(R.id.item_detail_container, fragment)
+            .replace(com.amqo.randomuser.R.id.item_detail_container, fragment)
             .commit()
     }
 }
