@@ -15,7 +15,7 @@ import com.amqo.randomuser.ui.base.ResourceProvider
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RandomUserViewModel(
+class RandomUserDetailFragmentViewModel(
     private val userId: String,
     private val getRandomUserWithIdUseCase: GetRandomUserWithIdUseCase,
     private val resourceProvider: ResourceProvider

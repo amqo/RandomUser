@@ -7,7 +7,8 @@ import com.amqo.randomuser.data.network.*
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import com.amqo.randomuser.data.repository.RandomUsersRepositoryImpl
 import com.amqo.randomuser.ui.base.ResourceProvider
-import com.amqo.randomuser.ui.detail.RandomUserViewModelFactory
+import com.amqo.randomuser.ui.detail.RandomUserDetailActivityViewModelFactory
+import com.amqo.randomuser.ui.detail.RandomUserDetailFragmentViewModelFactory
 import com.amqo.randomuser.ui.list.RandomUserListBoundaryCallback
 import com.amqo.randomuser.ui.list.RandomUserListViewModelFactory
 import org.kodein.di.Kodein
@@ -45,6 +46,7 @@ class RandomUserApplication: Application(), KodeinAware {
         // View models
         bind() from singleton { RandomUserListBoundaryCallback(instance()) }
         bind() from singleton { RandomUserListViewModelFactory(instance(), instance(), instance(), instance()) }
-        bind() from factory { userId: String -> RandomUserViewModelFactory(userId, instance(), instance()) }
+        bind() from factory { userId: String -> RandomUserDetailFragmentViewModelFactory(userId, instance(), instance()) }
+        bind() from singleton { RandomUserDetailActivityViewModelFactory(instance()) }
     }
 }

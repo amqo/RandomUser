@@ -20,6 +20,7 @@ import com.amqo.randomuser.ui.detail.RandomUserDetailFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_random_user_list.*
 import kotlinx.android.synthetic.main.random_user_list.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -29,13 +30,13 @@ import org.kodein.di.generic.instance
 class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdapter.RandomUsersListener {
 
     override val kodein by closestKodein()
+
     private val viewModelFactory: RandomUserListViewModelFactory by instance()
+    private var twoPane: Boolean = false
 
     private lateinit var viewModel: RandomUserListViewModel
     private lateinit var adapterRandomUserList: RandomUserListAdapter
     private lateinit var usersPagedList: PagedList<RandomUserEntry>
-
-    private var twoPane: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +70,9 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         hideKeyboard()
         Snackbar.make(frameLayout, "Please confirm, are you sure?", Snackbar.LENGTH_LONG)
             .setAction("Remove") {
-                viewModel.removeUser(randomUser)
+                launch(Dispatchers.IO) {
+                    viewModel.removeUser(randomUser)
+                }
             }.show()
     }
 

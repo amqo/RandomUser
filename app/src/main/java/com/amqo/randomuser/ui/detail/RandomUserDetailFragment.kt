@@ -27,17 +27,17 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
     }
 
     override val kodein by closestKodein()
-    private val viewModelFactoryInstanceFactory: ((String) -> RandomUserViewModelFactory) by factory()
+    private val detailFragmentViewModelFactoryInstanceFactory: ((String) -> RandomUserDetailFragmentViewModelFactory) by factory()
 
-    private lateinit var viewModel: RandomUserViewModel
+    private lateinit var detailFragmentViewModel: RandomUserDetailFragmentViewModel
     private lateinit var binding: FragmentRandomUserDetailBinding
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         val userId = arguments?.getString(ARG_USER_ID, "") as String
-        viewModel = ViewModelProviders.of(this, viewModelFactoryInstanceFactory(userId))
-            .get(RandomUserViewModel::class.java)
+        detailFragmentViewModel = ViewModelProviders.of(this, detailFragmentViewModelFactoryInstanceFactory(userId))
+            .get(RandomUserDetailFragmentViewModel::class.java)
 
         bindUI()
     }
@@ -52,17 +52,17 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun bindUI() = launch(Dispatchers.Main) {
-        consume(viewModel.randomUser, { randomUser ->
+        consume(detailFragmentViewModel.randomUser, { randomUser ->
             binding.randomUser = randomUser
             binding.randomUserInteractor = object : UserDetailInteractor {
                 override fun getMailFormatted(): Spannable {
-                    return viewModel.getMailFormatted(randomUser)
+                    return detailFragmentViewModel.getMailFormatted(randomUser)
                 }
                 override fun getRegisteredMessage(): Spannable {
-                    return viewModel.getRegisteredMessage(randomUser)
+                    return detailFragmentViewModel.getRegisteredMessage(randomUser)
                 }
                 override fun getMapUrl(): String {
-                    return viewModel.getMapUrl(randomUser)
+                    return detailFragmentViewModel.getMapUrl(randomUser)
                 }
                 override fun navigateToSendMail() {
                     this@RandomUserDetailFragment.navigateToSendMail()

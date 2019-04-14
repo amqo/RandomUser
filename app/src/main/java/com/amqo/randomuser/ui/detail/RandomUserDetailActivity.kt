@@ -1,18 +1,29 @@
 package com.amqo.randomuser.ui.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProviders
 import com.amqo.randomuser.R
 import com.amqo.randomuser.databinding.ActivityRandomUserDetailBinding
+import com.amqo.randomuser.ui.base.ScopedActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_random_user_detail.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 
-class RandomUserDetailActivity : AppCompatActivity() {
+class RandomUserDetailActivity : ScopedActivity(), KodeinAware {
 
+    override val kodein by closestKodein()
+
+    private val viewModelFactory: RandomUserDetailActivityViewModelFactory by instance()
+
+    private lateinit var viewModel: RandomUserDetailActivityViewModel
     private lateinit var activityMainBinding: ActivityRandomUserDetailBinding
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +33,10 @@ class RandomUserDetailActivity : AppCompatActivity() {
         setSupportActionBar(detail_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        initFabRemoveButton()
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(RandomUserDetailActivityViewModel::class.java)
+
+        bindUI()
         if (savedInstanceState == null) {
             addDetailFragment()
         }
@@ -38,11 +52,21 @@ class RandomUserDetailActivity : AppCompatActivity() {
 
     // Private functions
 
+    private fun bindUI() {
+        userId = intent.getStringExtra(RandomUserDetailFragment.ARG_USER_ID)
+        activityMainBinding.randomUserName = intent.getStringExtra(RandomUserDetailFragment.ARG_USER_NAME)
+        activityMainBinding.executePendingBindings()
+        initFabRemoveButton()
+    }
+
     private fun initFabRemoveButton() {
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Please confirm, are you sure?", Snackbar.LENGTH_LONG)
                 .setAction("Remove") {
-                    Log.e("TEST", "Removed")
+                    launch(Dispatchers.IO) {
+                        viewModel.removeUser(userId)
+                    }
+                    finish()
                 }.show()
         }
     }
@@ -50,13 +74,7 @@ class RandomUserDetailActivity : AppCompatActivity() {
     private fun addDetailFragment() {
         val fragment = RandomUserDetailFragment().apply {
             arguments = Bundle().apply {
-                activityMainBinding.randomUserName =
-                    intent.getStringExtra(RandomUserDetailFragment.ARG_USER_NAME)
-                activityMainBinding.executePendingBindings()
-                putString(
-                    RandomUserDetailFragment.ARG_USER_ID,
-                    intent.getStringExtra(RandomUserDetailFragment.ARG_USER_ID)
-                )
+                putString(RandomUserDetailFragment.ARG_USER_ID, userId)
             }
         }
         supportFragmentManager.beginTransaction()
