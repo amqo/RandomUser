@@ -1,6 +1,10 @@
 package com.amqo.randomuser.internal
 
+import android.app.Activity
+import android.content.Context
 import android.os.Handler
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.SearchView
 import androidx.databinding.BindingAdapter
@@ -41,7 +45,7 @@ fun SearchView.afterTextChanged(
 ) {
     this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         private var handler = Handler()
-        private val DELAY: Long = 1000
+        private val DELAY: Long = 800
         private val runnable = Runnable {
             afterTextChanged.invoke(query.toString())
         }
@@ -57,14 +61,23 @@ fun SearchView.afterTextChanged(
     })
 }
 
-@BindingAdapter("imageUrl")
-fun ImageView.setImageUrl(url: String?) {
-    GlideApp.with(context).load(url)
-        .placeholder(R.drawable.ic_account_circle_black_60dp).into(this)
+fun Activity.hideKeyboard() {
+    hideKeyboard(if (currentFocus == null) View(this) else currentFocus)
 }
 
 @BindingAdapter("circleImageUrl")
-fun ImageView.setCircleImageUrl(url: String?) {
+fun ImageView.setCircleImageUrl(
+    url: String?
+) {
     GlideApp.with(context).load(url).circleCrop()
         .placeholder(R.drawable.ic_account_circle_black_60dp).into(this)
+}
+
+// Private functions
+
+private fun Context.hideKeyboard(
+    view: View
+) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
 }

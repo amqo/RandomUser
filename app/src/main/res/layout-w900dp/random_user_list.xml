@@ -2,53 +2,76 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/margin_medium"
+    android:layout_marginRight="@dimen/margin_medium"
+    android:baselineAligned="false"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="horizontal"
     android:showDividers="middle"
-    android:orientation="vertical">
-
-    <SearchView
-        android:id="@+id/search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:iconifiedByDefault="false"
-        android:queryHint="Search Users"
-        android:layout_margin="16dp"
-        android:hint="Search"/>
+    tools:context=".ui.list.RandomUserListActivity">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:baselineAligned="false"
-        android:divider="?android:attr/dividerHorizontal"
-        android:orientation="horizontal"
-        android:showDividers="middle"
-        tools:context=".ui.list.ItemListActivity">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/item_list"
-            android:name="com.amqo.randomuser.ItemListFragment"
-            android:layout_width="@dimen/item_width"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            tools:context="com.amqo.randomuser.ui.list.ItemListActivity"
-            tools:listitem="@layout/random_user_item"/>
+        <SearchView
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:iconifiedByDefault="false"
+            android:queryHint="Search Users"
+            android:layout_margin="@dimen/margin_medium"
+            android:hint="Search"/>
 
         <FrameLayout
-            android:id="@+id/item_detail_container"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"/>
+            android:layout_width="@dimen/two_pane_list_width"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/item_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.amqo.randomuser.ui.list.RandomUserListActivity"
+                tools:listitem="@layout/random_user_item"/>
+
+            <LinearLayout
+                android:id="@+id/no_results_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|center"
+                    android:src="@drawable/placeholder_no_results"/>
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    style="?android:attr/textAppearanceLarge"
+                    android:drawablePadding="@dimen/padding_small"
+                    android:text="Sorry, No Results!"
+                    android:layout_marginTop="@dimen/margin_medium"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/item_detail_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"/>
 
 </LinearLayout>

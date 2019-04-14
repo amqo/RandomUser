@@ -5,7 +5,7 @@ import com.amqo.randomuser.data.repository.RandomUsersRepository
 import com.amqo.randomuser.db.entity.RandomUserEntry
 import kotlinx.coroutines.runBlocking
 
-class RandomUsersBoundaryCallback(
+class RandomUserListBoundaryCallback(
     private val randomUsersRepository: RandomUsersRepository
 ) : PagedList.BoundaryCallback<RandomUserEntry>() {
 

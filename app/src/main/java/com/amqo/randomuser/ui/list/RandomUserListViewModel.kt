@@ -41,7 +41,7 @@ class RandomUserListViewModel(
         val factory: DataSource.Factory<Int, RandomUserEntry> = randomUsersRepository.getRandomUsers()
         val pagedListBuilder: LivePagedListBuilder<Int, RandomUserEntry> =
             LivePagedListBuilder<Int, RandomUserEntry>(factory, PAGES_RANDOM_USERS_SIZE)
-        pagedListBuilder.setBoundaryCallback(RandomUsersBoundaryCallback(randomUsersRepository))
+        pagedListBuilder.setBoundaryCallback(RandomUserListBoundaryCallback(randomUsersRepository))
         return pagedListBuilder.build()
     }
 }

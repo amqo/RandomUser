@@ -16,19 +16,46 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:queryHint="Search Users"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/margin_medium"
         android:iconifiedByDefault="false"
         android:hint="Search"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/item_list"
-        android:name="com.amqo.randomuser.ItemListFragment"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.list.ItemListActivity"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/random_user_item"/>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.list.RandomUserListActivity"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/random_user_item"/>
+
+        <LinearLayout
+            android:id="@+id/no_results_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:src="@drawable/placeholder_no_results"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="?android:attr/textAppearanceLarge"
+                android:drawablePadding="@dimen/padding_small"
+                android:text="Sorry, No Results!"
+                android:layout_marginTop="@dimen/margin_medium"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

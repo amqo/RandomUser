@@ -7,6 +7,7 @@ import com.amqo.randomuser.data.repository.RandomUsersRepositoryImpl
 import com.amqo.randomuser.db.RandomUsersDatabase
 import com.amqo.randomuser.ui.detail.RandomUserViewModelFactory
 import com.amqo.randomuser.ui.list.RandomUserListViewModelFactory
+import com.jakewharton.threetenabp.AndroidThreeTen
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -30,5 +31,10 @@ class RandomUserApplication: Application(), KodeinAware {
         }
         bind() from singleton { RandomUserListViewModelFactory(instance()) }
         bind() from factory { userId: String -> RandomUserViewModelFactory(userId, instance()) }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        AndroidThreeTen.init(this)
     }
 }
