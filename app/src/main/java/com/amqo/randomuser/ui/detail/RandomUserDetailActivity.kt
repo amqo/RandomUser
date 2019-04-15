@@ -64,8 +64,8 @@ class RandomUserDetailActivity : ScopedActivity(), KodeinAware {
 
     private fun initFabRemoveButton() {
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Please confirm, are you sure?", Snackbar.LENGTH_LONG)
-                .setAction("Remove") {
+            Snackbar.make(view, R.string.message_confirmation, Snackbar.LENGTH_LONG)
+                .setAction(R.string.action_remove) {
                     launch(Dispatchers.IO) {
                         viewModel.removeUser(userId)
                     }

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="@dimen/margin_medium"
     android:layout_marginRight="@dimen/margin_medium"
     android:baselineAligned="false"
@@ -27,7 +27,7 @@
             android:iconifiedByDefault="false"
             android:queryHint="Search Users"
             android:layout_margin="@dimen/margin_medium"
-            android:hint="Search"/>
+            android:hint="@string/hint_search"/>
 
         <FrameLayout
             android:layout_width="@dimen/two_pane_list_width"
@@ -49,8 +49,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
                     android:layout_marginTop="@dimen/margin_large"
                     android:layout_gravity="top|center"
                     android:src="@drawable/placeholder_no_results"/>
@@ -62,7 +62,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:drawablePadding="@dimen/padding_small"
-                    android:text="Sorry, no results!"/>
+                    android:text="@string/message_no_results"/>
 
             </LinearLayout>
 

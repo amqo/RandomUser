@@ -18,7 +18,7 @@
         android:queryHint="Search Users"
         android:layout_margin="@dimen/margin_medium"
         android:iconifiedByDefault="false"
-        android:hint="Search"/>
+        android:hint="@string/hint_search"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -29,7 +29,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ui.list.RandomUserListActivity"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/random_user_item"/>
 
         <LinearLayout
@@ -54,7 +53,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/margin_medium"
                 android:drawablePadding="@dimen/padding_small"
-                android:text="Sorry, no results!"/>
+                android:text="@string/message_no_results"/>
 
         </LinearLayout>
 

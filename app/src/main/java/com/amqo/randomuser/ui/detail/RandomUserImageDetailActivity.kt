@@ -11,6 +11,7 @@ class RandomUserImageDetailActivity : AppCompatActivity() {
     companion object {
 
         const val ARG_USER_IMAGE_URL = "arg_user_image_url"
+        const val ARG_USER_NAME = "arg_user_name"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,11 +20,13 @@ class RandomUserImageDetailActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val imageUrl = intent.getStringExtra(ARG_USER_IMAGE_URL)
-
-        imageUrl?.let {
-            GlideApp.with(this).load(imageUrl).into(random_user_image)
+        intent.getStringExtra(ARG_USER_IMAGE_URL)?.let {
+            GlideApp.with(this).load(it).into(random_user_image)
         } ?: finish()
+
+        intent.getStringExtra(ARG_USER_NAME)?.let {
+            supportActionBar?.title = it
+        }
     }
 
     override fun onBackPressed() = supportFinishAfterTransition()

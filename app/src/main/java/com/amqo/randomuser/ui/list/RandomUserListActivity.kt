@@ -10,6 +10,7 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.amqo.randomuser.R
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.internal.afterTextChanged
 import com.amqo.randomuser.internal.consume
@@ -44,7 +45,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.amqo.randomuser.R.layout.activity_random_user_list)
+        setContentView(R.layout.activity_random_user_list)
         setSupportActionBar(toolbar)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)
@@ -94,8 +95,8 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         launch {
             consume(viewModel.randomUsers, {
                 usersPagedList = it
-                if (twoPane && !usersPagedList.contains(selectedRandomUser)) {
-                    adapterRandomUserList.currentList?.first()?.let { firstUser ->
+                if (twoPane && (!usersPagedList.contains(selectedRandomUser) || selectedRandomUser == null)) {
+                    it.first()?.let { firstUser ->
                         item_list.scrollToPosition(0)
                         onRandomUserSelected(firstUser)
                     }
@@ -124,8 +125,8 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
     }
 
     private fun showUserRemoveUndoAction(randomUser: RandomUserEntry) {
-        Snackbar.make(frameLayout, "User removed", Snackbar.LENGTH_LONG)
-            .setAction("Undo") {
+        Snackbar.make(frameLayout, R.string.message_user_removed, Snackbar.LENGTH_LONG)
+            .setAction(R.string.action_undo) {
                 launch(Dispatchers.IO) {
                     viewModel.recoverUser(randomUser)
                 }
@@ -182,7 +183,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         }
         return supportFragmentManager
             .beginTransaction()
-            .replace(com.amqo.randomuser.R.id.item_detail_container, fragment)
+            .replace(R.id.item_detail_container, fragment)
             .commit()
     }
 }

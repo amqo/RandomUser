@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
+import com.amqo.randomuser.R
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.databinding.FragmentRandomUserDetailBinding
 import com.amqo.randomuser.internal.consume
@@ -22,7 +23,6 @@ import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.factory
-
 
 class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
 
@@ -53,8 +53,8 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-            inflater, com.amqo.randomuser.R.layout.fragment_random_user_detail ,container, false)
+        val layout = R.layout.fragment_random_user_detail
+        binding = DataBindingUtil.inflate(inflater, layout, container, false)
         return binding.root
     }
 
@@ -104,7 +104,7 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(Intent.EXTRA_EMAIL, it.email)
-            startActivity(Intent.createChooser(intent, "Send Email"))
+            startActivity(Intent.createChooser(intent, getString(R.string.message_send_mail)))
         }
     }
 
@@ -112,9 +112,7 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
         activity?.let { activity ->
             binding.randomUser?.let {
                 val gmmIntentUri = Uri.parse(
-                    "geo:" +
-                            "${it.location.coordinates.latitude}," +
-                            "${it.location.coordinates.longitude}"
+                    "geo:${it.location.coordinates.latitude},${it.location.coordinates.longitude}"
                 )
                 val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
                 mapIntent.setPackage("com.google.android.apps.maps")
@@ -130,8 +128,9 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
             binding.randomUser?.let {
                 val intent = Intent(activity, RandomUserImageDetailActivity::class.java)
                 intent.putExtra(RandomUserImageDetailActivity.ARG_USER_IMAGE_URL, it.picture.large)
+                intent.putExtra(RandomUserImageDetailActivity.ARG_USER_NAME, it.getFullName())
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    activity, binding.userImage as View, "user_image_transition")
+                    activity, binding.userImage as View, getString(R.string.user_image_transition))
                 startActivity(intent, options.toBundle())
             }
         }
