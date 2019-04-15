@@ -18,9 +18,8 @@ class RandomUserListBoundaryCallback(
         getNewRandomUsers()
     }
 
-    private fun getNewRandomUsers() {
+    private fun getNewRandomUsers() =
         GlobalScope.launch {
             getNewRandomUsersUseCase.execute()
         }
-    }
 }

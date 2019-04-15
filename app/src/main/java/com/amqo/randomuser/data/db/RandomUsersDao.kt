@@ -14,6 +14,9 @@ interface RandomUsersDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(randomUsersEntries: List<RandomUserEntry>)
 
+    @Query("update random_users set removed = 0 where user_uuid == :id")
+    fun recover(id: String)
+
     @Query("select * from random_users where removed == 0")
     fun getAllPaged(): DataSource.Factory<Int, RandomUserEntry>
 

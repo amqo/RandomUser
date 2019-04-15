@@ -26,9 +26,7 @@ class RandomUserImageDetailActivity : AppCompatActivity() {
         } ?: finish()
     }
 
-    override fun onBackPressed() {
-        supportFinishAfterTransition()
-    }
+    override fun onBackPressed() = supportFinishAfterTransition()
 
     override fun onOptionsItemSelected(item: MenuItem) =
         when (item.itemId) {

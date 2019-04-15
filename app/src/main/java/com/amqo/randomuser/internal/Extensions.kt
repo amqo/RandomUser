@@ -70,6 +70,7 @@ fun ImageView.setCircleImageUrl(
     url: String?
 ) {
     GlideApp.with(context).load(url).circleCrop()
+        .error(R.drawable.ic_account_circle_black_60dp)
         .placeholder(R.drawable.ic_account_circle_black_60dp).into(this)
 }
 
@@ -77,8 +78,9 @@ fun ImageView.setCircleImageUrl(
 fun ImageView.setImageMapUrl(
     url: String?
 ) {
-    GlideApp.with(context).load(url).placeholder(
-        R.drawable.ic_map_black_24dp).into(this)
+    GlideApp.with(context).load(url)
+        .placeholder(R.drawable.ic_map_black_24dp)
+        .error(R.drawable.ic_map_black_24dp).into(this)
 }
 
 // Private functions

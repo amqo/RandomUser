@@ -42,6 +42,8 @@
                     android:id="@+id/user_name_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_small"
                     android:text="@{randomUser.fullName}"
                     android:textAppearance="?attr/textAppearanceListItem"/>
 
@@ -49,6 +51,7 @@
                     android:id="@+id/user_mail_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_small"
                     android:text="@{randomUser.email}"
                     android:textAppearance="?attr/textAppearanceListItem"/>
@@ -64,7 +67,7 @@
                     android:clickable="true"
                     android:padding="@dimen/padding_small"
                     android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_small"
                     android:text="@{randomUser.phone}"
                     android:textAppearance="?attr/textAppearanceListItem"
                     android:focusable="true"/>

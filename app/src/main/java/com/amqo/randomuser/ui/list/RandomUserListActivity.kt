@@ -19,6 +19,9 @@ import com.amqo.randomuser.ui.base.ScopedActivity
 import com.amqo.randomuser.ui.base.SwipeToDeleteHandler
 import com.amqo.randomuser.ui.detail.RandomUserDetailActivity
 import com.amqo.randomuser.ui.detail.RandomUserDetailFragment
+import com.amqo.randomuser.ui.list.model.RandomUserListViewModel
+import com.amqo.randomuser.ui.list.model.RandomUserListViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_random_user_list.*
 import kotlinx.android.synthetic.main.random_user_list.*
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +29,6 @@ import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-
 
 class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdapter.RandomUsersListener {
 
@@ -116,8 +118,18 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
                 launch(Dispatchers.IO) {
                     viewModel.removeUser(randomUser)
                 }
+                showUserRemoveUndoAction(randomUser)
             }
         }).attachToRecyclerView(this)
+    }
+
+    private fun showUserRemoveUndoAction(randomUser: RandomUserEntry) {
+        Snackbar.make(frameLayout, "User removed", Snackbar.LENGTH_LONG)
+            .setAction("Undo") {
+                launch(Dispatchers.IO) {
+                    viewModel.recoverUser(randomUser)
+                }
+            }.show()
     }
 
     private fun initSearchListener() {
@@ -134,15 +146,16 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
     }
 
     private fun getFilteredRandomUsers(searchTerm: String) {
-        viewModel.getFilteredRandomUsers(searchTerm).observeOnce(this@RandomUserListActivity,
-            Observer { filteredRandomUsers ->
-                adapterRandomUserList.submitList(filteredRandomUsers)
-                if (filteredRandomUsers.isNotEmpty()) {
-                    no_results_container.visibility = View.GONE
-                } else {
-                    no_results_container.visibility = View.VISIBLE
-                }
-            })
+        viewModel.getFilteredRandomUsersBuilder(searchTerm).build()
+            .observeOnce(this@RandomUserListActivity,
+                Observer { filteredRandomUsers ->
+                    adapterRandomUserList.submitList(filteredRandomUsers)
+                    if (filteredRandomUsers.isNotEmpty()) {
+                        no_results_container.visibility = View.GONE
+                    } else {
+                        no_results_container.visibility = View.VISIBLE
+                    }
+                })
     }
 
     private fun showRandomUserDetail(

@@ -15,6 +15,10 @@ interface RandomUsersRepository {
 
     fun getRandomUsers(): DataSource.Factory<Int, RandomUserEntry>
 
+    fun recoverRandomUser(
+        randomUser: RandomUserEntry
+    )
+
     fun getRandomUserWithId(
         id: String
     ): LiveData<out RandomUserEntry>

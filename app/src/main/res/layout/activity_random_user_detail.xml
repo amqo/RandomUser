@@ -30,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
+                app:collapsedTitleGravity="center_horizontal"
                 app:contentScrim="?attr/colorPrimary"
                 app:title="@{randomUserName}"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"

@@ -33,6 +33,6 @@ data class RandomUserEntry(
     }
 
     fun getFullName() : String {
-        return name.first + " " +  name.last
+        return "${name.first.capitalize()} ${name.last.capitalize()}"
     }
 }

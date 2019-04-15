@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.amqo.randomuser.R
 import com.amqo.randomuser.databinding.ActivityRandomUserDetailBinding
 import com.amqo.randomuser.ui.base.ScopedActivity
+import com.amqo.randomuser.ui.detail.model.RandomUserDetailActivityViewModel
+import com.amqo.randomuser.ui.detail.model.RandomUserDetailActivityViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_random_user_detail.*
 import kotlinx.coroutines.Dispatchers

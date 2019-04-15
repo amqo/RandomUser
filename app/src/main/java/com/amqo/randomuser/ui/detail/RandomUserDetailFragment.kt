@@ -14,6 +14,9 @@ import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.databinding.FragmentRandomUserDetailBinding
 import com.amqo.randomuser.internal.consume
 import com.amqo.randomuser.ui.base.ScopedFragment
+import com.amqo.randomuser.ui.detail.model.RandomUserDetailFragmentViewModel
+import com.amqo.randomuser.ui.detail.model.RandomUserDetailFragmentViewModelFactory
+import kotlinx.android.synthetic.main.fragment_random_user_detail.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -83,13 +86,15 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
             override fun getMailFormatted(): Spannable {
                 return detailFragmentViewModel.getMailFormatted(randomUser)
             }
-
             override fun getRegisteredMessage(): Spannable {
                 return detailFragmentViewModel.getRegisteredMessage(randomUser)
             }
-
             override fun getMapUrl(): String {
-                return detailFragmentViewModel.getMapUrl(randomUser)
+                val mapUrl = detailFragmentViewModel.getMapUrl(randomUser)
+                if (mapUrl.isEmpty()) {
+                    map_image.visibility = View.GONE
+                }
+                return mapUrl
             }
         }
     }
