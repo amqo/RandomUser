@@ -46,7 +46,7 @@
             android:layout_alignTop="@+id/user_image"
             android:layout_toEndOf="@+id/user_image"
             android:layout_marginStart="@dimen/margin_medium"
-            android:text="@{randomUser.location.street + `\n` + randomUser.location.city + `\n` + randomUser.location.state}"/>
+            android:text="@{randomUserInteractor.getAddressFormatted()}"/>
 
         <TextView
             android:id="@+id/user_gender"

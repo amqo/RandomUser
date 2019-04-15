@@ -26,7 +26,6 @@ abstract class RandomUsersDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context.applicationContext,
-                RandomUsersDatabase::class.java, "random_users.db")
-                .build()
+                RandomUsersDatabase::class.java, "random_users.db").build()
     }
 }

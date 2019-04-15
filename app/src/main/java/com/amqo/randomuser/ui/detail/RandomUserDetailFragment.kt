@@ -69,26 +69,32 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
 
     private fun bindNavigator() {
         binding.randomUserNavigator = object : UserDetailNavigator {
-            override fun navigateToSendMail() {
+
+            override fun navigateToSendMail()=
                 this@RandomUserDetailFragment.navigateToSendMail()
-            }
-            override fun navigateToUserLocation() {
+
+            override fun navigateToUserLocation() =
                 this@RandomUserDetailFragment.navigateToUserLocation()
-            }
-            override fun navigateToUserImage() {
+
+            override fun navigateToUserImage() =
                 this@RandomUserDetailFragment.navigateToUserImage()
-            }
+
         }
     }
 
     private fun bindInteractor(randomUser: RandomUserEntry) {
         binding.randomUserInteractor = object : UserDetailInteractor {
-            override fun getMailFormatted(): Spannable {
-                return detailFragmentViewModel.getMailFormatted(randomUser)
-            }
-            override fun getRegisteredMessage(): Spannable {
-                return detailFragmentViewModel.getRegisteredMessage(randomUser)
-            }
+
+            override fun getMailFormatted(): Spannable =
+                detailFragmentViewModel.getMailFormatted(randomUser)
+
+            override fun getRegisteredMessage(): Spannable =
+                detailFragmentViewModel.getRegisteredMessage(randomUser)
+
+            override fun getAddressFormatted(): String =
+                "${randomUser.location.street.capitalize()}\n${randomUser.location.city.capitalize()}" +
+                        "\n${randomUser.location.state.capitalize()}"
+
             override fun getMapUrl(): String {
                 val mapUrl = detailFragmentViewModel.getMapUrl(randomUser)
                 if (mapUrl.isEmpty()) {
@@ -141,6 +147,8 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
         fun getMapUrl(): String
 
         fun getMailFormatted(): Spannable
+
+        fun getAddressFormatted(): String
 
         fun getRegisteredMessage(): Spannable
     }
