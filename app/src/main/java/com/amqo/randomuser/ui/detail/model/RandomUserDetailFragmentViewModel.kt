@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.amqo.randomuser.R
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.domain.GetRandomUserWithIdUseCase
-import com.amqo.randomuser.data.network.ApiSecret
+import com.amqo.randomuser.data.network.GoogleApiSecret
 import com.amqo.randomuser.internal.lazyDeferred
 import com.amqo.randomuser.ui.base.ResourcesProvider
 
@@ -31,12 +31,12 @@ class RandomUserDetailFragmentViewModel(
     fun getMapUrl(
         randomUser: RandomUserEntry
     ): String {
-        if (ApiSecret.GOOGLE_MAPS_API_KEY.isEmpty()) {
+        if (GoogleApiSecret.GOOGLE_MAPS_API_KEY.isEmpty()) {
             return ""
         }
         return "$GOOGLE_STATIC_MAP_BASE_URL?center=" +
                 "${randomUser.location.coordinates.latitude},${randomUser.location.coordinates.longitude}" +
-                "&zoom=$STATIC_MAP_ZOOM&size=$STATIC_MAP_SIZE&key=${ApiSecret.GOOGLE_MAPS_API_KEY}"
+                "&zoom=$STATIC_MAP_ZOOM&size=$STATIC_MAP_SIZE&key=${GoogleApiSecret.GOOGLE_MAPS_API_KEY}"
 
     }
 
