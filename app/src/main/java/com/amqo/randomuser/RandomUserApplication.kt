@@ -46,18 +46,14 @@ class RandomUserApplication: Application(), KodeinAware {
         bind() from singleton { SearchRandomUsersUseCase(instance()) }
         // Internal
         bind() from singleton { ResourcesProvider(instance()) }
-        // View models
         bind() from singleton { RandomUserListBoundaryCallback(instance()) }
         bind() from singleton { LivePagedListBuilderFactory<RandomUserEntry>() }
+        // View models
         bind() from singleton {
             RandomUserListViewModelFactory(instance(), instance(), instance(), instance(), instance(), instance())
         }
         bind() from factory { userId: String ->
-            RandomUserDetailFragmentViewModelFactory(
-                userId,
-                instance(),
-                instance()
-            )
+            RandomUserDetailFragmentViewModelFactory(userId, instance(), instance())
         }
         bind() from singleton { RandomUserDetailActivityViewModelFactory(instance()) }
     }

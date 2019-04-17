@@ -14,6 +14,7 @@ import com.amqo.randomuser.R
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.databinding.FragmentRandomUserDetailBinding
 import com.amqo.randomuser.internal.consume
+import com.amqo.randomuser.ui.base.GlideApp
 import com.amqo.randomuser.ui.base.ScopedFragment
 import com.amqo.randomuser.ui.detail.model.RandomUserDetailFragmentViewModel
 import com.amqo.randomuser.ui.detail.model.RandomUserDetailFragmentViewModelFactory
@@ -64,6 +65,10 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
             bindInteractor(randomUser)
             bindNavigator()
             binding.executePendingBindings()
+
+            GlideApp.with(this@RandomUserDetailFragment).load(randomUser.picture.large)
+                .error(R.drawable.ic_account_circle_black_60dp)
+                .placeholder(R.drawable.ic_account_circle_black_60dp).into(binding.userImage)
         })
     }
 
