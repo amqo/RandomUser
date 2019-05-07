@@ -3,6 +3,7 @@ package com.amqo.randomuser.data.domain
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
@@ -26,6 +27,10 @@ class RecoverRandomUserTest {
     }
 
     @Test
+    @DisplayName(
+        "When RecoverRandomUserUseCase is called with a RandomUserEntry, " +
+                "Then RandomUsersRepository recoverRandomUser function is called with the same RandomUserEntry"
+    )
     fun deleteRandomUserWithId() {
         recoverRandomUserUseCase.execute(randomUser)
 

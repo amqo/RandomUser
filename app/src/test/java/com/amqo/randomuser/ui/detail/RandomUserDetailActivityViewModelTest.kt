@@ -3,6 +3,7 @@ package com.amqo.randomuser.ui.detail
 import com.amqo.randomuser.data.domain.DeleteRandomUserWithIdUseCase
 import com.amqo.randomuser.ui.detail.model.RandomUserDetailActivityViewModel
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
@@ -18,8 +19,7 @@ class RandomUserDetailActivityViewModelTest {
 
     private val dummyUserId: String = UUID.randomUUID().toString()
 
-    @Mock
-    lateinit var deleteRandomUserWithIdUseCase: DeleteRandomUserWithIdUseCase
+    @Mock lateinit var deleteRandomUserWithIdUseCase: DeleteRandomUserWithIdUseCase
 
     @InjectMocks
     internal lateinit var randomUserDetailActivityViewModel: RandomUserDetailActivityViewModel
@@ -30,6 +30,10 @@ class RandomUserDetailActivityViewModelTest {
     }
 
     @Test
+    @DisplayName(
+        "When RandomUserDetailActivityViewModel removeUser function is called with an ID, " +
+                "Then DeleteRandomUserWithIdUseCase is executed with the same ID"
+    )
     fun removeUser() {
         randomUserDetailActivityViewModel.removeUser(dummyUserId)
 

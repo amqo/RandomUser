@@ -5,6 +5,7 @@ import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
@@ -29,6 +30,10 @@ class GetLocalRandomUsersTest {
     }
 
     @Test
+    @DisplayName(
+        "When GetLocalRandomUsersUseCase is called, " +
+                "Then RandomUsersRepository getRandomUsers function is called"
+    )
     fun getLocalRandomUsers() {
         Mockito.`when`(repository.getRandomUsers()).thenAnswer { randomUsersFactory }
         getLocalRandomUsersUseCase.execute()

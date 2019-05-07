@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
@@ -31,6 +32,10 @@ class GetRandomUserWithIdTest {
     }
 
     @Test
+    @DisplayName(
+        "When GetRandomUserWithIdUseCase is called with an ID, " +
+                "Then RandomUsersRepository getRandomUserWithId function is called with the same ID"
+    )
     fun getRandomUserWithId() {
         Mockito.`when`(repository.getRandomUserWithId(dummyUserId)).thenAnswer { randomUserLiveData }
         getRandomUserWithIdUseCase.execute(dummyUserId)

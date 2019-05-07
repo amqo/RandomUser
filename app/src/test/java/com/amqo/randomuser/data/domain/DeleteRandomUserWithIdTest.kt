@@ -2,6 +2,7 @@ package com.amqo.randomuser.data.domain
 
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mockito.InjectMocks
@@ -26,6 +27,10 @@ class DeleteRandomUserWithIdTest {
     }
 
     @Test
+    @DisplayName(
+        "When DeleteRandomUserWithIdUseCase is called with and ID, " +
+                "Then RandomUsersRepository deleteRandomUserWithId function is called with the same ID"
+    )
     fun deleteRandomUserWithId() {
         deleteRandomUserWithIdUseCase.execute(dummyUserId)
 

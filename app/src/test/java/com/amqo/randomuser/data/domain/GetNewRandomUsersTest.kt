@@ -3,6 +3,7 @@ package com.amqo.randomuser.data.domain
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
@@ -25,6 +26,10 @@ class GetNewRandomUsersTest {
     }
 
     @Test
+    @DisplayName(
+        "When GetNewRandomUsersUseCase is called, " +
+                "Then RandomUsersRepository getNewRandomUsers function is called"
+    )
     fun getLocalRandomUsers() {
         runBlocking {
             getNewRandomUsersUseCase.execute()

@@ -12,6 +12,7 @@ import com.amqo.randomuser.ui.list.model.LivePagedListBuilderFactory
 import com.amqo.randomuser.ui.list.model.RandomUserListViewModel
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
@@ -47,11 +48,19 @@ class RandomUserListViewModelTest {
     }
 
     @Test
+    @DisplayName(
+        "When RandomUserListViewModel randomUsers is referenced, " +
+                "Then LivePagedListBuilder build function is called"
+    )
     fun randomUsersInit() {
         runBlocking {
             Mockito.`when`(getLocalRandomUsersUseCase.execute()).thenReturn(dataSourceFactory)
-            Mockito.`when`(livePagedListBuilderFactory.create(RandomUsersRepository.PAGES_RANDOM_USERS_SIZE,
-                randomUserListBoundaryCallback, dataSourceFactory)).thenReturn(livePagedListBuilder)
+            Mockito.`when`(
+                livePagedListBuilderFactory.create(
+                    RandomUsersRepository.PAGES_RANDOM_USERS_SIZE,
+                    randomUserListBoundaryCallback, dataSourceFactory
+                )
+            ).thenReturn(livePagedListBuilder)
             randomUserListViewModel.randomUsers.await()
 
             Mockito.verify(livePagedListBuilder).build()
@@ -59,6 +68,10 @@ class RandomUserListViewModelTest {
     }
 
     @Test
+    @DisplayName(
+        "When RandomUserListViewModel removeUser is called with a RandomUserEntry, " +
+                "Then DeleteRandomUserWithIdUseCase is executed with the same RandomUserEntry ID"
+    )
     fun removeUser() {
         Mockito.`when`(randomUser.getId()).thenReturn(dummyUserId)
         randomUserListViewModel.removeUser(randomUser)
@@ -67,6 +80,10 @@ class RandomUserListViewModelTest {
     }
 
     @Test
+    @DisplayName(
+        "When RandomUserListViewModel recoverUser is called with a RandomUserEntry, " +
+                "Then RecoverRandomUserUseCase is executed with the same RandomUserEntry"
+    )
     fun recoverUser() {
         randomUserListViewModel.recoverUser(randomUser)
 
@@ -74,11 +91,17 @@ class RandomUserListViewModelTest {
     }
 
     @Test
+    @DisplayName(
+        "When RandomUserListViewModel getFilteredRandomUsersBuilder is called with a SearchTerm, " +
+                "Then SearchRandomUsersUseCase is executed using that SearchTerm"
+    )
     fun getFilteredUsers() {
         Mockito.`when`(searchRandomUsersUseCase.execute("%$searchTerm%")).thenReturn(dataSourceFactory)
         randomUserListViewModel.getFilteredRandomUsersBuilder(searchTerm)
 
+        Mockito.verify(searchRandomUsersUseCase).execute("%$searchTerm%")
         Mockito.verify(livePagedListBuilderFactory).create(
-            RandomUsersRepository.PAGES_RANDOM_USERS_SIZE, dataSourceFactory)
+            RandomUsersRepository.PAGES_RANDOM_USERS_SIZE, dataSourceFactory
+        )
     }
 }
