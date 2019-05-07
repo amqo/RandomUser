@@ -36,6 +36,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
     override val kodein by closestKodein()
 
     private val viewModelFactory: RandomUserListViewModelFactory by instance()
+
     private var twoPane: Boolean = false
     private var selectedRandomUser: RandomUserEntry? = null
 

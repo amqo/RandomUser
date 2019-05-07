@@ -7,13 +7,17 @@ import com.amqo.randomuser.data.network.response.Registered
 import com.amqo.randomuser.ui.base.ResourcesProvider
 import com.amqo.randomuser.ui.detail.model.RandomUserDetailFragmentViewModel
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import java.util.*
 
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RandomUserDetailFragmentViewModelTest {
 
     private val dummyUserId = UUID.randomUUID().toString()
@@ -27,7 +31,7 @@ class RandomUserDetailFragmentViewModelTest {
 
     private lateinit var randomUserDetailFragmentViewModel: RandomUserDetailFragmentViewModel
 
-    @Before
+    @BeforeAll
     fun injectMocks() {
         MockitoAnnotations.initMocks(this)
         randomUserDetailFragmentViewModel = RandomUserDetailFragmentViewModel(

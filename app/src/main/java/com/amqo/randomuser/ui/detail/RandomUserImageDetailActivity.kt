@@ -39,7 +39,9 @@ class RandomUserImageDetailActivity : AppCompatActivity() {
         animateTransitionRounded()
     }
 
-    override fun onBackPressed() = finishAfterTransition()
+    override fun onBackPressed() {
+        finishAfterTransition()
+    }
 
     override fun onOptionsItemSelected(item: MenuItem) =
         when (item.itemId) {

@@ -2,14 +2,18 @@ package com.amqo.randomuser.ui.detail
 
 import com.amqo.randomuser.data.domain.DeleteRandomUserWithIdUseCase
 import com.amqo.randomuser.ui.detail.model.RandomUserDetailActivityViewModel
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import java.util.*
 
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RandomUserDetailActivityViewModelTest {
 
     private val dummyUserId: String = UUID.randomUUID().toString()
@@ -20,7 +24,7 @@ class RandomUserDetailActivityViewModelTest {
     @InjectMocks
     internal lateinit var randomUserDetailActivityViewModel: RandomUserDetailActivityViewModel
 
-    @Before
+    @BeforeAll
     fun injectMocks() {
         MockitoAnnotations.initMocks(this)
     }

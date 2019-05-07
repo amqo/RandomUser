@@ -4,14 +4,18 @@ import androidx.paging.DataSource
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GetLocalRandomUsersTest {
 
     @Mock lateinit var repository: RandomUsersRepository
@@ -19,7 +23,7 @@ class GetLocalRandomUsersTest {
 
     @InjectMocks internal lateinit var getLocalRandomUsersUseCase: GetLocalRandomUsersUseCase
 
-    @Before
+    @BeforeAll
     fun injectMocks() {
         MockitoAnnotations.initMocks(this)
     }

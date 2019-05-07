@@ -75,7 +75,7 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
     private fun bindNavigator() {
         binding.randomUserNavigator = object : UserDetailNavigator {
 
-            override fun navigateToSendMail()=
+            override fun navigateToSendMail() =
                 this@RandomUserDetailFragment.navigateToSendMail()
 
             override fun navigateToUserLocation() =

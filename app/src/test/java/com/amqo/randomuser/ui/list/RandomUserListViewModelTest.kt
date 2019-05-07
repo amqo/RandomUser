@@ -11,14 +11,17 @@ import com.amqo.randomuser.data.repository.RandomUsersRepository
 import com.amqo.randomuser.ui.list.model.LivePagedListBuilderFactory
 import com.amqo.randomuser.ui.list.model.RandomUserListViewModel
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import java.util.*
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RandomUserListViewModelTest {
 
     private val dummyUserId: String = UUID.randomUUID().toString()
@@ -38,7 +41,7 @@ class RandomUserListViewModelTest {
     @InjectMocks
     internal lateinit var randomUserListViewModel: RandomUserListViewModel
 
-    @Before
+    @BeforeAll
     fun injectMocks() {
         MockitoAnnotations.initMocks(this)
     }

@@ -25,24 +25,33 @@ class RandomUsersRepositoryImpl(
         }
     }
 
-    override suspend fun getNewRandomUsers() =
+    override suspend fun getNewRandomUsers() {
         randomUsersNetworkDataSource.fetchRandomUsers(PAGES_RANDOM_USERS_SIZE)
+    }
 
-    override fun getRandomUsers(): DataSource.Factory<Int, RandomUserEntry> = randomUsersDao.getAllPaged()
+    override fun getRandomUsers(): DataSource.Factory<Int, RandomUserEntry> {
+        return randomUsersDao.getAllPaged()
+    }
 
-    override fun recoverRandomUser(randomUser: RandomUserEntry) = randomUsersDao.recover(randomUser.getId())
+    override fun recoverRandomUser(randomUser: RandomUserEntry) {
+        randomUsersDao.recover(randomUser.getId())
+    }
 
     override fun getRandomUserWithId(
         id: String
-    ): LiveData<out RandomUserEntry> = randomUsersDao.getWithId(id)
+    ): LiveData<out RandomUserEntry> {
+        return randomUsersDao.getWithId(id)
+    }
 
-    override fun deleteRandomUserWithId(id: String) =
+    override fun deleteRandomUserWithId(id: String) {
         randomUsersDao.deleteWithId(id)
+    }
 
     override fun searchRandomUsers(
         search: String
-    ): DataSource.Factory<Int, RandomUserEntry> =
-        randomUsersDao.getWithSearch(search)
+    ): DataSource.Factory<Int, RandomUserEntry> {
+        return randomUsersDao.getWithSearch(search)
+    }
 
     private fun persistFetchedRandomUsers(fetchedRandomUsers: RandomUsersResponse) {
         GlobalScope.launch(Dispatchers.IO) {
