@@ -3,7 +3,6 @@ package com.amqo.randomuser.data.domain
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import io.mockk.MockKAnnotations
 import io.mockk.clearMocks
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.*
@@ -14,11 +13,13 @@ class SearchRandomUsersTest {
     private val searchTerm = "dummy search"
     private val repository = mockk<RandomUsersRepository>(relaxed = true)
 
-    @InjectMockKs
-    private var searchRandomUsersUseCase = SearchRandomUsersUseCase(repository)
+    private lateinit var searchRandomUsersUseCase: SearchRandomUsersUseCase
 
     @BeforeAll
-    fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
+    fun setUp() {
+        MockKAnnotations.init(this, relaxUnitFun = true)
+        searchRandomUsersUseCase = SearchRandomUsersUseCase(repository)
+    }
 
     @BeforeEach
     fun reset() {

@@ -7,7 +7,6 @@ import com.amqo.randomuser.data.network.response.Registered
 import com.amqo.randomuser.ui.base.ResourcesProvider
 import com.amqo.randomuser.ui.detail.model.RandomUserDetailFragmentViewModel
 import io.mockk.*
-import io.mockk.impl.annotations.InjectMockKs
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
 import java.util.*
@@ -24,12 +23,14 @@ class RandomUserDetailFragmentViewModelTest {
     private val randomUser = mockk<RandomUserEntry>()
     private val randomUserRegistered = mockk<Registered>()
 
-    @InjectMockKs
-    private var randomUserDetailFragmentViewModel =
-        RandomUserDetailFragmentViewModel(dummyUserId, getRandomUserWithIdUseCase, resourcesProvider)
+    private lateinit var randomUserDetailFragmentViewModel: RandomUserDetailFragmentViewModel
 
     @BeforeAll
-    fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
+    fun setUp() {
+        MockKAnnotations.init(this, relaxUnitFun = true)
+        randomUserDetailFragmentViewModel = RandomUserDetailFragmentViewModel(
+            dummyUserId, getRandomUserWithIdUseCase, resourcesProvider)
+    }
 
     @BeforeEach
     fun reset() {

@@ -3,7 +3,6 @@ package com.amqo.randomuser.data.domain
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import io.mockk.MockKAnnotations
 import io.mockk.clearMocks
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.*
@@ -15,11 +14,13 @@ class DeleteRandomUserWithIdTest {
     private val dummyUserId = UUID.randomUUID().toString()
     private val repository = mockk<RandomUsersRepository>(relaxed = true)
 
-    @InjectMockKs
-    private var deleteRandomUserWithIdUseCase = DeleteRandomUserWithIdUseCase(repository)
+    private lateinit var deleteRandomUserWithIdUseCase: DeleteRandomUserWithIdUseCase
 
     @BeforeAll
-    fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
+    fun setUp() {
+        MockKAnnotations.init(this, relaxUnitFun = true)
+        deleteRandomUserWithIdUseCase = DeleteRandomUserWithIdUseCase(repository)
+    }
 
     @BeforeEach
     fun reset() {
