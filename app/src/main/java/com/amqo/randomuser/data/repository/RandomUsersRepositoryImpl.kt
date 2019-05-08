@@ -53,6 +53,8 @@ class RandomUsersRepositoryImpl(
         return randomUsersDao.getWithSearch(search)
     }
 
+    // Private functions
+
     private fun persistFetchedRandomUsers(fetchedRandomUsers: RandomUsersResponse) {
         GlobalScope.launch(Dispatchers.IO) {
             randomUsersDao.insert(fetchedRandomUsers.results)
