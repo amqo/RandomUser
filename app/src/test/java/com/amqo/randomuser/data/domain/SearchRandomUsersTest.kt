@@ -1,30 +1,29 @@
 package com.amqo.randomuser.data.domain
 
 import com.amqo.randomuser.data.repository.RandomUsersRepository
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
-
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SearchRandomUsersTest {
 
     private val searchTerm = "dummy search"
+    private val repository = mockk<RandomUsersRepository> {
+        every { searchRandomUsers(searchTerm) } returns mockk()
+    }
 
-    @Mock lateinit var repository: RandomUsersRepository
-
-    @InjectMocks internal lateinit var searchRandomUsersUseCase: SearchRandomUsersUseCase
+    @InjectMockKs
+    private var searchRandomUsersUseCase = SearchRandomUsersUseCase(repository)
 
     @BeforeAll
-    fun injectMocks() {
-        MockitoAnnotations.initMocks(this)
-    }
+    fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
 
     @Test
     @DisplayName(
@@ -34,6 +33,6 @@ class SearchRandomUsersTest {
     fun deleteRandomUserWithId() {
         searchRandomUsersUseCase.execute(searchTerm)
 
-        verify(repository).searchRandomUsers(searchTerm)
+        verify { repository.searchRandomUsers(searchTerm) }
     }
 }

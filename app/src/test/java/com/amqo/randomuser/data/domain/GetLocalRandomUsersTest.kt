@@ -3,31 +3,31 @@ package com.amqo.randomuser.data.domain
 import androidx.paging.DataSource
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
-
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GetLocalRandomUsersTest {
 
-    @Mock lateinit var repository: RandomUsersRepository
-    @Mock lateinit var randomUsersFactory: DataSource.Factory<Int, RandomUserEntry>
+    private val repository = mockk<RandomUsersRepository> {
+        every { getRandomUsers() } returns randomUsersFactory
+    }
+    private val randomUsersFactory = mockk<DataSource.Factory<Int, RandomUserEntry>>()
 
-    @InjectMocks internal lateinit var getLocalRandomUsersUseCase: GetLocalRandomUsersUseCase
+    @InjectMockKs
+    private var getLocalRandomUsersUseCase = GetLocalRandomUsersUseCase(repository)
 
     @BeforeAll
-    fun injectMocks() {
-        MockitoAnnotations.initMocks(this)
-    }
+    fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
 
     @Test
     @DisplayName(
@@ -35,11 +35,10 @@ class GetLocalRandomUsersTest {
                 "Then RandomUsersRepository getRandomUsers function is called"
     )
     fun getLocalRandomUsers() {
-        Mockito.`when`(repository.getRandomUsers()).thenAnswer { randomUsersFactory }
         getLocalRandomUsersUseCase.execute()
 
         runBlocking {
-            verify(repository).getRandomUsers()
+            verify { repository.getRandomUsers() }
         }
     }
 }

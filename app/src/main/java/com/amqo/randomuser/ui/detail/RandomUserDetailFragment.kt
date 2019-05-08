@@ -83,7 +83,6 @@ class RandomUserDetailFragment : ScopedFragment(), KodeinAware {
 
             override fun navigateToUserImage() =
                 this@RandomUserDetailFragment.navigateToUserImage()
-
         }
     }
 

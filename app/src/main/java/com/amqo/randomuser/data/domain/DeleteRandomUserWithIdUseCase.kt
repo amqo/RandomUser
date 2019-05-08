@@ -7,5 +7,7 @@ class DeleteRandomUserWithIdUseCase(
 ) {
     fun execute(
         id: String
-    ) = randomUsersRepository.deleteRandomUserWithId(id)
+    ) {
+        randomUsersRepository.deleteRandomUserWithId(id)
+    }
 }

@@ -3,33 +3,30 @@ package com.amqo.randomuser.data.domain
 import androidx.lifecycle.MutableLiveData
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.mockk
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 import java.util.*
-
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GetRandomUserWithIdTest {
 
     private val dummyUserId = UUID.randomUUID().toString()
+    private val repository = mockk<RandomUsersRepository> {
+        every { getRandomUserWithId(dummyUserId) } returns randomUserLiveData
+    }
+    private val randomUserLiveData = mockk<MutableLiveData<RandomUserEntry>>()
 
-    @Mock lateinit var repository: RandomUsersRepository
-    @Mock lateinit var randomUserLiveData: MutableLiveData<RandomUserEntry>
-
-    @InjectMocks internal lateinit var getRandomUserWithIdUseCase: GetRandomUserWithIdUseCase
+    @InjectMockKs
+    private var getRandomUserWithIdUseCase = GetRandomUserWithIdUseCase(repository)
 
     @BeforeAll
-    fun injectMocks() {
-        MockitoAnnotations.initMocks(this)
-    }
+    fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
 
     @Test
     @DisplayName(
@@ -37,9 +34,8 @@ class GetRandomUserWithIdTest {
                 "Then RandomUsersRepository getRandomUserWithId function is called with the same ID"
     )
     fun getRandomUserWithId() {
-        Mockito.`when`(repository.getRandomUserWithId(dummyUserId)).thenAnswer { randomUserLiveData }
         getRandomUserWithIdUseCase.execute(dummyUserId)
 
-        verify(repository).getRandomUserWithId(dummyUserId)
+        every { repository.getRandomUserWithId(dummyUserId) }
     }
 }

@@ -1,7 +1,6 @@
 package com.amqo.randomuser.ui.list
 
 import androidx.paging.DataSource
-import androidx.paging.LivePagedListBuilder
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.domain.DeleteRandomUserWithIdUseCase
 import com.amqo.randomuser.data.domain.GetLocalRandomUsersUseCase
@@ -10,16 +9,16 @@ import com.amqo.randomuser.data.domain.SearchRandomUsersUseCase
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import com.amqo.randomuser.ui.list.model.LivePagedListBuilderFactory
 import com.amqo.randomuser.ui.list.model.RandomUserListViewModel
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -28,42 +27,58 @@ class RandomUserListViewModelTest {
     private val dummyUserId: String = UUID.randomUUID().toString()
     private val searchTerm = "dummy search"
 
-    @Mock lateinit var randomUserListBoundaryCallback: RandomUserListBoundaryCallback
-    @Mock lateinit var getLocalRandomUsersUseCase: GetLocalRandomUsersUseCase
-    @Mock lateinit var deleteRandomUserWithIdUseCase: DeleteRandomUserWithIdUseCase
-    @Mock lateinit var searchRandomUsersUseCase: SearchRandomUsersUseCase
-    @Mock lateinit var recoverRandomUserUseCase: RecoverRandomUserUseCase
-    @Mock lateinit var livePagedListBuilderFactory: LivePagedListBuilderFactory<RandomUserEntry>
-    @Mock lateinit var dataSourceFactory: DataSource.Factory<Int, RandomUserEntry>
+    private val randomUserListBoundaryCallback = mockk<RandomUserListBoundaryCallback>()
+    private val getLocalRandomUsersUseCase = mockk<GetLocalRandomUsersUseCase> {
+        every { execute() } returns dataSourceFactory
+    }
+    private val deleteRandomUserWithIdUseCase = mockk<DeleteRandomUserWithIdUseCase> {
+        every { execute(dummyUserId) } returns mockk()
+    }
+    private val searchRandomUsersUseCase = mockk<SearchRandomUsersUseCase> {
+        every { execute("%$searchTerm%") } returns dataSourceFactory
+    }
+    private val recoverRandomUserUseCase = mockk<RecoverRandomUserUseCase> {
+        every { execute(any()) } returns mockk()
+    }
 
-    @Mock lateinit var livePagedListBuilder: LivePagedListBuilder<Int, RandomUserEntry>
-    @Mock lateinit var randomUser: RandomUserEntry
+    private val livePagedListBuilderFactory = mockk<LivePagedListBuilderFactory<RandomUserEntry>> {
+        every {
+            create(
+                RandomUsersRepository.PAGES_RANDOM_USERS_SIZE,
+                randomUserListBoundaryCallback, dataSourceFactory
+            )
+        } returns mockk {
+            every { build() } returns mockk()
+        }
+        every { create(any(), any()) } returns mockk {
+            every { build() } returns mockk()
+        }
+    }
 
-    @InjectMocks
-    internal lateinit var randomUserListViewModel: RandomUserListViewModel
+    private val dataSourceFactory = mockk<DataSource.Factory<Int, RandomUserEntry>>()
+    private val randomUser = mockk<RandomUserEntry> {
+        every { getId() } returns dummyUserId
+    }
+
+    @InjectMockKs
+    private var randomUserListViewModel = RandomUserListViewModel(
+        randomUserListBoundaryCallback, getLocalRandomUsersUseCase,
+        deleteRandomUserWithIdUseCase, searchRandomUsersUseCase, recoverRandomUserUseCase,
+        livePagedListBuilderFactory)
 
     @BeforeAll
-    fun injectMocks() {
-        MockitoAnnotations.initMocks(this)
-    }
+    fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
 
     @Test
     @DisplayName(
         "When RandomUserListViewModel randomUsers is referenced, " +
-                "Then LivePagedListBuilder build function is called"
+                "Then LivePagedListBuilderFactory is created"
     )
     fun randomUsersInit() {
         runBlocking {
-            Mockito.`when`(getLocalRandomUsersUseCase.execute()).thenReturn(dataSourceFactory)
-            Mockito.`when`(
-                livePagedListBuilderFactory.create(
-                    RandomUsersRepository.PAGES_RANDOM_USERS_SIZE,
-                    randomUserListBoundaryCallback, dataSourceFactory
-                )
-            ).thenReturn(livePagedListBuilder)
             randomUserListViewModel.randomUsers.await()
 
-            Mockito.verify(livePagedListBuilder).build()
+            verify { livePagedListBuilderFactory.create(any(), any(), any()) }
         }
     }
 
@@ -73,10 +88,9 @@ class RandomUserListViewModelTest {
                 "Then DeleteRandomUserWithIdUseCase is executed with the same RandomUserEntry ID"
     )
     fun removeUser() {
-        Mockito.`when`(randomUser.getId()).thenReturn(dummyUserId)
         randomUserListViewModel.removeUser(randomUser)
 
-        Mockito.verify(deleteRandomUserWithIdUseCase).execute(dummyUserId)
+        verify { deleteRandomUserWithIdUseCase.execute(dummyUserId) }
     }
 
     @Test
@@ -87,7 +101,7 @@ class RandomUserListViewModelTest {
     fun recoverUser() {
         randomUserListViewModel.recoverUser(randomUser)
 
-        Mockito.verify(recoverRandomUserUseCase).execute(randomUser)
+        verify { recoverRandomUserUseCase.execute(randomUser) }
     }
 
     @Test
@@ -96,12 +110,8 @@ class RandomUserListViewModelTest {
                 "Then SearchRandomUsersUseCase is executed using that SearchTerm"
     )
     fun getFilteredUsers() {
-        Mockito.`when`(searchRandomUsersUseCase.execute("%$searchTerm%")).thenReturn(dataSourceFactory)
         randomUserListViewModel.getFilteredRandomUsersBuilder(searchTerm)
 
-        Mockito.verify(searchRandomUsersUseCase).execute("%$searchTerm%")
-        Mockito.verify(livePagedListBuilderFactory).create(
-            RandomUsersRepository.PAGES_RANDOM_USERS_SIZE, dataSourceFactory
-        )
+        verify { searchRandomUsersUseCase.execute("%$searchTerm%") }
     }
 }

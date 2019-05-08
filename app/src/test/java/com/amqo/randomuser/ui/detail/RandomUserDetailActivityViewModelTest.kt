@@ -2,32 +2,31 @@ package com.amqo.randomuser.ui.detail
 
 import com.amqo.randomuser.data.domain.DeleteRandomUserWithIdUseCase
 import com.amqo.randomuser.ui.detail.model.RandomUserDetailActivityViewModel
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 import java.util.*
-
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RandomUserDetailActivityViewModelTest {
 
     private val dummyUserId: String = UUID.randomUUID().toString()
+    private val deleteRandomUserWithIdUseCase = mockk<DeleteRandomUserWithIdUseCase> {
+        every { execute(dummyUserId) } returns mockk()
+    }
 
-    @Mock lateinit var deleteRandomUserWithIdUseCase: DeleteRandomUserWithIdUseCase
-
-    @InjectMocks
-    internal lateinit var randomUserDetailActivityViewModel: RandomUserDetailActivityViewModel
+    @InjectMockKs
+    private var randomUserDetailActivityViewModel =
+        RandomUserDetailActivityViewModel(deleteRandomUserWithIdUseCase)
 
     @BeforeAll
-    fun injectMocks() {
-        MockitoAnnotations.initMocks(this)
-    }
+    fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
 
     @Test
     @DisplayName(
@@ -37,6 +36,6 @@ class RandomUserDetailActivityViewModelTest {
     fun removeUser() {
         randomUserDetailActivityViewModel.removeUser(dummyUserId)
 
-        verify(deleteRandomUserWithIdUseCase).execute(dummyUserId)
+        verify { deleteRandomUserWithIdUseCase.execute(dummyUserId) }
     }
 }

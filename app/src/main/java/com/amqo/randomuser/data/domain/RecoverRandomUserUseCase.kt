@@ -8,5 +8,7 @@ class RecoverRandomUserUseCase(
 ) {
     fun execute(
         randomUser: RandomUserEntry
-    ) = randomUsersRepository.recoverRandomUser(randomUser)
+    ) {
+        randomUsersRepository.recoverRandomUser(randomUser)
+    }
 }

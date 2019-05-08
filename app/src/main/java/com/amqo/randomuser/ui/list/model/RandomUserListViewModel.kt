@@ -24,23 +24,28 @@ class RandomUserListViewModel(
         getRandomUsersBuilder().build()
     }
 
-    fun removeUser(randomUser: RandomUserEntry) =
+    fun removeUser(randomUser: RandomUserEntry) {
         deleteRandomUserWithIdUseCase.execute(randomUser.getId())
+    }
 
-    fun recoverUser(randomUser: RandomUserEntry) =
+    fun recoverUser(randomUser: RandomUserEntry) {
         recoverRandomUserUseCase.execute(randomUser)
+    }
 
     fun getFilteredRandomUsersBuilder(
         search: String
-    ): LivePagedListBuilder<Int, RandomUserEntry> =
-        livePagedListBuilderFactory.create(
-            PAGES_RANDOM_USERS_SIZE, searchRandomUsersUseCase.execute("%$search%"))
-
+    ): LivePagedListBuilder<Int, RandomUserEntry> {
+        return livePagedListBuilderFactory.create(
+            PAGES_RANDOM_USERS_SIZE, searchRandomUsersUseCase.execute("%$search%")
+        )
+    }
 
     // Private functions
 
-    private fun getRandomUsersBuilder(): LivePagedListBuilder<Int, RandomUserEntry> =
-        livePagedListBuilderFactory.create(
+    private fun getRandomUsersBuilder(): LivePagedListBuilder<Int, RandomUserEntry> {
+        return livePagedListBuilderFactory.create(
             PAGES_RANDOM_USERS_SIZE,
-            randomUserListBoundaryCallback, getLocalRandomUsersUseCase.execute())
+            randomUserListBoundaryCallback, getLocalRandomUsersUseCase.execute()
+        )
+    }
 }

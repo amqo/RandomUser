@@ -5,9 +5,9 @@ import androidx.room.Room
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
 import com.amqo.randomuser.R
 import com.amqo.randomuser.RandomUserMockGenerator
 import com.amqo.randomuser.data.db.RandomUsersDatabase
