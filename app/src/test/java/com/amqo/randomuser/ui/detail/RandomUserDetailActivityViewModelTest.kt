@@ -3,23 +3,18 @@ package com.amqo.randomuser.ui.detail
 import com.amqo.randomuser.data.domain.DeleteRandomUserWithIdUseCase
 import com.amqo.randomuser.ui.detail.model.RandomUserDetailActivityViewModel
 import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.clearMocks
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RandomUserDetailActivityViewModelTest {
 
     private val dummyUserId: String = UUID.randomUUID().toString()
-    private val deleteRandomUserWithIdUseCase = mockk<DeleteRandomUserWithIdUseCase> {
-        every { execute(dummyUserId) } returns mockk()
-    }
+    private val deleteRandomUserWithIdUseCase = mockk<DeleteRandomUserWithIdUseCase>(relaxed = true)
 
     @InjectMockKs
     private var randomUserDetailActivityViewModel =
@@ -27,6 +22,11 @@ class RandomUserDetailActivityViewModelTest {
 
     @BeforeAll
     fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
+
+    @BeforeEach
+    fun reset() {
+        clearMocks(deleteRandomUserWithIdUseCase)
+    }
 
     @Test
     @DisplayName(

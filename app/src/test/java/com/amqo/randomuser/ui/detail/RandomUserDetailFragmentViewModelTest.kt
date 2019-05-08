@@ -6,16 +6,10 @@ import com.amqo.randomuser.data.domain.GetRandomUserWithIdUseCase
 import com.amqo.randomuser.data.network.response.Registered
 import com.amqo.randomuser.ui.base.ResourcesProvider
 import com.amqo.randomuser.ui.detail.model.RandomUserDetailFragmentViewModel
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -25,13 +19,8 @@ class RandomUserDetailFragmentViewModelTest {
     private val dummyMail = "dummyMail@example.com"
     private val dummyRegisteredDate = "005-01-26T13:08:18Z"
 
-    private val getRandomUserWithIdUseCase = mockk<GetRandomUserWithIdUseCase> {
-        every { execute(dummyUserId) } returns mockk()
-    }
-    private val resourcesProvider = mockk<ResourcesProvider> {
-        every { formatDateColor(R.color.colorPrimary, "Registered since ", dummyRegisteredDate) } returns mockk()
-        every { formatStringColorUnderline(android.R.color.holo_blue_dark, dummyMail) } returns mockk()
-    }
+    private val getRandomUserWithIdUseCase = mockk<GetRandomUserWithIdUseCase>(relaxed = true)
+    private val resourcesProvider = mockk<ResourcesProvider>(relaxed = true)
     private val randomUser = mockk<RandomUserEntry>()
     private val randomUserRegistered = mockk<Registered>()
 
@@ -41,6 +30,11 @@ class RandomUserDetailFragmentViewModelTest {
 
     @BeforeAll
     fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
+
+    @BeforeEach
+    fun reset() {
+        clearMocks(getRandomUserWithIdUseCase, resourcesProvider, randomUser, randomUserRegistered)
+    }
 
     @Test
     @DisplayName(

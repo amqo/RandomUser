@@ -3,16 +3,10 @@ package com.amqo.randomuser.data.domain
 import androidx.paging.DataSource
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -28,6 +22,11 @@ class GetLocalRandomUsersTest {
 
     @BeforeAll
     fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
+
+    @BeforeEach
+    fun reset() {
+        clearMocks(randomUsersFactory)
+    }
 
     @Test
     @DisplayName(

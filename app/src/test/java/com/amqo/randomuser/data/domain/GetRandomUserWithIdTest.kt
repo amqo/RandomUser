@@ -4,13 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import io.mockk.MockKAnnotations
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.mockk
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -27,6 +25,11 @@ class GetRandomUserWithIdTest {
 
     @BeforeAll
     fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
+
+    @BeforeEach
+    fun reset() {
+        clearMocks(randomUserLiveData)
+    }
 
     @Test
     @DisplayName(

@@ -9,16 +9,10 @@ import com.amqo.randomuser.data.domain.SearchRandomUsersUseCase
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import com.amqo.randomuser.ui.list.model.LivePagedListBuilderFactory
 import com.amqo.randomuser.ui.list.model.RandomUserListViewModel
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -60,6 +54,12 @@ class RandomUserListViewModelTest {
 
     @BeforeAll
     fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)
+
+    @BeforeEach
+    fun reset() {
+        clearMocks(randomUserListBoundaryCallback, deleteRandomUserWithIdUseCase,
+            recoverRandomUserUseCase, dataSourceFactory)
+    }
 
     @Test
     @DisplayName(
