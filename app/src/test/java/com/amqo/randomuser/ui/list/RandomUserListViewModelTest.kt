@@ -31,15 +31,11 @@ class RandomUserListViewModelTest {
     private val getLocalRandomUsersUseCase = mockk<GetLocalRandomUsersUseCase> {
         every { execute() } returns dataSourceFactory
     }
-    private val deleteRandomUserWithIdUseCase = mockk<DeleteRandomUserWithIdUseCase> {
-        every { execute(dummyUserId) } returns mockk()
-    }
+    private val deleteRandomUserWithIdUseCase = mockk<DeleteRandomUserWithIdUseCase>(relaxed = true)
     private val searchRandomUsersUseCase = mockk<SearchRandomUsersUseCase> {
         every { execute("%$searchTerm%") } returns dataSourceFactory
     }
-    private val recoverRandomUserUseCase = mockk<RecoverRandomUserUseCase> {
-        every { execute(any()) } returns mockk()
-    }
+    private val recoverRandomUserUseCase = mockk<RecoverRandomUserUseCase>(relaxed = true)
 
     private val livePagedListBuilderFactory = mockk<LivePagedListBuilderFactory<RandomUserEntry>> {
         every {
@@ -47,12 +43,8 @@ class RandomUserListViewModelTest {
                 RandomUsersRepository.PAGES_RANDOM_USERS_SIZE,
                 randomUserListBoundaryCallback, dataSourceFactory
             )
-        } returns mockk {
-            every { build() } returns mockk()
-        }
-        every { create(any(), any()) } returns mockk {
-            every { build() } returns mockk()
-        }
+        } returns mockk(relaxed = true)
+        every { create(any(), any()) } returns mockk()
     }
 
     private val dataSourceFactory = mockk<DataSource.Factory<Int, RandomUserEntry>>()
