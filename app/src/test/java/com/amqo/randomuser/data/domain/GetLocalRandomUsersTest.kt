@@ -4,6 +4,7 @@ import androidx.paging.DataSource
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import io.mockk.*
+import io.mockk.impl.annotations.InjectMockKs
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
 
@@ -14,17 +15,17 @@ class GetLocalRandomUsersTest {
     private val repository = mockk<RandomUsersRepository>()
     private val randomUsersFactory = mockk<DataSource.Factory<Int, RandomUserEntry>>()
 
+    @InjectMockKs
     private lateinit var getLocalRandomUsersUseCase: GetLocalRandomUsersUseCase
 
     @BeforeAll
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        getLocalRandomUsersUseCase = GetLocalRandomUsersUseCase(repository)
     }
 
     @BeforeEach
     fun reset() {
-        clearMocks(repository, randomUsersFactory)
+        clearAllMocks()
     }
 
     @Test

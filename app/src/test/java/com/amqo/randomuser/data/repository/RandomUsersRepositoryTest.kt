@@ -28,7 +28,7 @@ class RandomUsersRepositoryTest {
 
     @BeforeEach
     fun reset() {
-        clearMocks(randomUsersDao, randomUsersNetworkDataSource, randomUser)
+        clearAllMocks()
     }
 
     @Test

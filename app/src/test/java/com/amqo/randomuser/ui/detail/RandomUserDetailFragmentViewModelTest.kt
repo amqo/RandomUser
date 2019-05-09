@@ -34,7 +34,7 @@ class RandomUserDetailFragmentViewModelTest {
 
     @BeforeEach
     fun reset() {
-        clearMocks(getRandomUserWithIdUseCase, resourcesProvider, randomUser, randomUserRegistered)
+        clearAllMocks()
     }
 
     @Test

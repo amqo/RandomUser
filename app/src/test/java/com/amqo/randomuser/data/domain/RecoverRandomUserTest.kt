@@ -3,7 +3,8 @@ package com.amqo.randomuser.data.domain
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import io.mockk.MockKAnnotations
-import io.mockk.clearMocks
+import io.mockk.clearAllMocks
+import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.*
@@ -14,17 +15,17 @@ class RecoverRandomUserTest {
     private val repository = mockk<RandomUsersRepository>(relaxed = true)
     private val randomUser = mockk<RandomUserEntry>()
 
+    @InjectMockKs
     private lateinit var recoverRandomUserUseCase: RecoverRandomUserUseCase
 
     @BeforeAll
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        recoverRandomUserUseCase = RecoverRandomUserUseCase(repository)
     }
 
     @BeforeEach
     fun reset() {
-        clearMocks(repository, randomUser)
+        clearAllMocks()
     }
 
     @Test

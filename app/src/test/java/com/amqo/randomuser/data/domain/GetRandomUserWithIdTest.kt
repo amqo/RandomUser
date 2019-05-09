@@ -4,8 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import com.amqo.randomuser.data.db.entity.RandomUserEntry
 import com.amqo.randomuser.data.repository.RandomUsersRepository
 import io.mockk.MockKAnnotations
-import io.mockk.clearMocks
+import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.mockk
 import org.junit.jupiter.api.*
 import java.util.*
@@ -17,17 +18,17 @@ class GetRandomUserWithIdTest {
     private val repository = mockk<RandomUsersRepository>()
     private val randomUserLiveData = mockk<MutableLiveData<RandomUserEntry>>()
 
+    @InjectMockKs
     private lateinit var getRandomUserWithIdUseCase: GetRandomUserWithIdUseCase
 
     @BeforeAll
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        getRandomUserWithIdUseCase = GetRandomUserWithIdUseCase(repository)
     }
 
     @BeforeEach
     fun reset() {
-        clearMocks(repository, randomUserLiveData)
+        clearAllMocks()
     }
 
     @Test
