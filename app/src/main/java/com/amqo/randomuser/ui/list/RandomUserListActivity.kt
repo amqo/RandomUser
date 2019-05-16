@@ -56,8 +56,8 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         twoPane = item_detail_container != null
 
         initRandomUsersAdapter()
-        consumeRandomUsers()
         initSearchListener()
+        bindUI()
     }
 
     override fun onResume() {
@@ -92,7 +92,7 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
         }
     }
 
-    private fun consumeRandomUsers() {
+    private fun bindUI() {
         launch {
             consume(viewModel.randomUsers, {
                 usersPagedList = it
@@ -120,12 +120,12 @@ class RandomUserListActivity : ScopedActivity(), KodeinAware, RandomUserListAdap
                 launch(Dispatchers.IO) {
                     viewModel.removeUser(randomUser)
                 }
-                showUserRemoveUndoAction(randomUser)
+                showRecoverUserFeedback(randomUser)
             }
         }).attachToRecyclerView(this)
     }
 
-    private fun showUserRemoveUndoAction(randomUser: RandomUserEntry) {
+    private fun showRecoverUserFeedback(randomUser: RandomUserEntry) {
         Snackbar.make(frameLayout, R.string.message_user_removed, Snackbar.LENGTH_LONG)
             .setAction(R.string.action_undo) {
                 launch(Dispatchers.IO) {

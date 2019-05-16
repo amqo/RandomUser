@@ -8,5 +8,4 @@ class RandomUserDetailActivityViewModel(
 ) : ViewModel() {
 
     fun removeUser(userId: String) = deleteRandomUserWithIdUseCase.execute(userId)
-
 }
